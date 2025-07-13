@@ -3,7 +3,7 @@ const cors = require("cors");
 const MongoDB = require("./app/utils/mongodb.util");
 const config = require("./app/config");
 const ApiError = require("./app/api-error");
-const routes = require("./app/routes");
+const docgiaRoute = require("./app/routes/docgia.route");
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
     res.send({ message: "Backend Quản lý thư viện" });
 });
 
-app.use("/", routes);
+app.use("/docgia", docgiaRoute);
 
 // Xử lý route không tồn tại
 app.use((req, res, next) => {
