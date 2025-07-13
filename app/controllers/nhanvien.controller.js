@@ -1,9 +1,9 @@
 const MongoDB = require("../utils/mongodb.util");
-const DocGiaService = require("../services/docgia.service");
+const NhanVienService = require("../services/nhanvien.service");
 
 exports.create = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
+        const service = new NhanVienService(MongoDB.client);
 
         // Kiểm tra trùng Username
         if (req.body.Username) {
@@ -22,12 +22,12 @@ exports.create = async (req, res, next) => {
         }
 
         // Thêm trường Role mặc định là "user"
-        req.body.Role = "user";
+        req.body.Role = "admin";
 
         // Tạo mã độc giả ngẫu nhiên
-        req.body.MaDocGia = "DG" + Date.now() + Math.floor(Math.random() * 1000);
+        req.body.MaNhanVien = "NV" + Date.now() + Math.floor(Math.random() * 1000);
         const result = await service.create(req.body);
-        res.send({ message: "Tạo độc giả thành công!", data: result });
+        res.send({ message: "Tạo nhân viên thành công!", data: result });
     } catch (error) {
         next(error);
     }
@@ -35,7 +35,7 @@ exports.create = async (req, res, next) => {
 
 exports.findAll = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
+        const service = new NhanVienService(MongoDB.client);
         const result = await service.findAll();
         res.send(result);
     } catch (error) {
@@ -43,23 +43,23 @@ exports.findAll = async (req, res, next) => {
     }
 };
 
-exports.findByMaDocGia = async (req, res, next) => {
+exports.findByMaNhanVien = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
+        const service = new NhanVienService(MongoDB.client);
         // Lấy đúng tên biến theo route
-        const result = await service.findByMaDocGia(req.params.madocgia);
-        if (!result) return res.status(404).send({ message: "Mã độc giả không tồn tại" });
+        const result = await service.findByMaNhanVien(req.params.manhanvien);
+        if (!result) return res.status(404).send({ message: "Mã nhân viên không tồn tại" });
         res.send(result);
     } catch (error) {
         next(error);
     }
 };
 
-exports.findByTenDocGia = async (req, res, next) => {
+exports.findByTenNhanVien = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
-        const result = await service.findByTenDocGia(req.params.tendocgia);
-        if (!result || result.length === 0) return res.status(404).send({ message: "Không tìm thấy tên độc giả tương ứng" });
+        const service = new NhanVienService(MongoDB.client);
+        const result = await service.findByTenNhanVien(req.params.tennhanvien);
+        if (!result || result.length === 0) return res.status(404).send({ message: "Không tìm thấy tên nhân viên tương ứng" });
         res.send(result);
     } catch (error) {
         next(error);
@@ -68,7 +68,7 @@ exports.findByTenDocGia = async (req, res, next) => {
 
 exports.findBySoDienThoai = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
+        const service = new NhanVienService(MongoDB.client);
         const result = await service.findBySoDienThoai(req.params.sodienthoai);
         if (!result || result.length === 0) return res.status(404).send({ message: "Không tìm thấy số điện thoại tương ứng" });
         res.send(result);
@@ -79,9 +79,9 @@ exports.findBySoDienThoai = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
-        const result = await service.update(req.params.madocgia, req.body);
-        res.send({ message: "Cập nhật độc giả thành công!", data: result });
+        const service = new NhanVienService(MongoDB.client);
+        const result = await service.update(req.params.manhanvien, req.body);
+        res.send({ message: "Cập nhật nhân viên thành công!", data: result });
     } catch (error) {
         next(error);
     }
@@ -89,9 +89,9 @@ exports.update = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
     try {
-        const service = new DocGiaService(MongoDB.client);
-        const result = await service.delete(req.params.madocgia);
-        res.send({ message: "Xóa độc giả thành công!", data: result });
+        const service = new NhanVienService(MongoDB.client);
+        const result = await service.delete(req.params.manhanvien);
+        res.send({ message: "Xóa nhân viên thành công!", data: result });
     } catch (error) {
         next(error);
     }
