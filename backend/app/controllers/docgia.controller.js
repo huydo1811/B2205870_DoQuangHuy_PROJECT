@@ -1,18 +1,22 @@
 const MongoDB = require("../utils/mongodb.util");
 const DocGiaService = require("../services/docgia.service");
+const NhanVienService = require("../services/nhanvien.service");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.JWT_SECRET || "khoabimatla18112004";
 
 exports.create = async (req, res, next) => {
     try {
         const service = new DocGiaService(MongoDB.client);
+        const nhanVienService = new NhanVienService(MongoDB.client);
 
-        // Kiểm tra trùng Username
-        if (req.body.Username) {
-            const existedUsername = await service.collection.findOne({ Username: req.body.Username });
-            if (existedUsername) {
-                return res.status(400).send({ message: "Username đã tồn tại!" });
-            }
+        // Kiểm tra trùng Username ở Độc Giả
+        let existedUsername = await service.collection.findOne({ Username: req.body.Username });
+        // Kiểm tra trùng Username ở Nhân Viên nếu chưa thấy ở Độc Giả
+        if (!existedUsername) {
+            existedUsername = await nhanVienService.collection.findOne({ Username: req.body.Username });
+        }
+        if (existedUsername) {
+            return res.status(400).send({ message: "Tên đăng nhập đã tồn tại ở hệ thống!" });
         }
 
         // Kiểm tra trùng Số điện thoại

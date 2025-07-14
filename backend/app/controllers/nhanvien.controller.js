@@ -1,16 +1,20 @@
 const MongoDB = require("../utils/mongodb.util");
 const NhanVienService = require("../services/nhanvien.service");
+const DocGiaService = require("../services/docgia.service");
 
 exports.create = async (req, res, next) => {
     try {
         const service = new NhanVienService(MongoDB.client);
+        const docGiaService = new DocGiaService(MongoDB.client);
 
-        // Kiểm tra trùng Username
-        if (req.body.Username) {
-            const existedUsername = await service.collection.findOne({ Username: req.body.Username });
-            if (existedUsername) {
-                return res.status(400).send({ message: "Username đã tồn tại!" });
-            }
+        // Kiểm tra trùng Username ở Nhân Viên
+        let existedUsername = await service.collection.findOne({ Username: req.body.Username });
+        // Kiểm tra trùng Username ở Độc Giả nếu chưa thấy ở Nhân Viên
+        if (!existedUsername) {
+            existedUsername = await docGiaService.collection.findOne({ Username: req.body.Username });
+        }
+        if (existedUsername) {
+            return res.status(400).send({ message: "Tên đăng nhập đã tồn tại ở hệ thống!" });
         }
 
         // Kiểm tra trùng Số điện thoại
