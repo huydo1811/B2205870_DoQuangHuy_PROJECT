@@ -18,11 +18,11 @@ app.get("/", (req, res) => {
     res.send({ message: "Backend Quản lý thư viện" });
 });
 
-app.use("/docgia", docgiaRoute);
-app.use("/nhanvien", nhanvienRoute);
-app.use("/nhaxuatban", nhaxuatbanRoute);
-app.use("/sach", sachRoute);
-app.use("/theodoimuonsach", theodoimuonsachRoute);
+app.use("/api/docgia", docgiaRoute);
+app.use("/api/nhanvien", nhanvienRoute);
+app.use("/api/nhaxuatban", nhaxuatbanRoute);
+app.use("/api/sach", sachRoute);
+app.use("/api/theodoimuonsach", theodoimuonsachRoute);
 
 // Xử lý route không tồn tại
 app.use((req, res, next) => {

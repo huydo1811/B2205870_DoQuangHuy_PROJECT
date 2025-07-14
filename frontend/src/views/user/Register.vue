@@ -2,7 +2,10 @@
   <div class="register-bg d-flex flex-column justify-content-center align-items-center">
     <div class="card register-card">
       <div class="register-header fs-2">ĐĂNG KÝ</div>
-      <form class="register-body px-5 py-4">
+
+      <form class="register-body px-5 py-4" @submit.prevent="handleRegister">
+      <div v-if="error" class="alert alert-danger mt-2">{{ error }}</div>
+      <div v-if="success" class="alert alert-success mt-2">{{ success }}</div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label" for="lastname">Họ và chữ lót</label>
@@ -33,12 +36,12 @@
         </div>
         <div class="mb-3">
           <label class="form-label" for="username">Tên đăng nhập</label>
-          <input id="username" type="text" class="form-control register-input" v-model="username" placeholder="Nhập tên đăng nhập" autocomplete="username" />
+          <input id="username" type="text" class="form-control register-input" v-model="username" placeholder="Nhập tên đăng nhập (Tối thiểu 6 ký tự)" autocomplete="username" />
         </div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label" for="password">Mật khẩu</label>
-            <input id="password" type="password" class="form-control register-input" v-model="password" placeholder="Nhập mật khẩu" autocomplete="new-password" />
+            <input id="password" type="password" class="form-control register-input" v-model="password" placeholder="Nhập mật khẩu (Tối thiểu 6 ký tự)" autocomplete="new-password" />
           </div>
           <div class="col-md-6 mb-4">
             <label class="form-label" for="confirmPassword">Nhập lại mật khẩu</label>
@@ -56,6 +59,11 @@
 
 <script setup>
 import { ref } from 'vue';
+import api from '../../services/api.service';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const error = ref('');
+const success = ref('');
 const lastname = ref('');
 const firstname = ref('');
 const gender = ref('');
@@ -64,6 +72,39 @@ const address = ref('');
 const username = ref('');
 const password = ref('');
 const confirmPassword = ref('');
+
+const handleRegister = async () => {
+  error.value = '';
+  success.value = '';
+
+  if (password.value !== confirmPassword.value) {
+    error.value = 'Mật khẩu nhập lại không khớp!';
+    return;
+  }
+
+  try {
+    const res = await api.post('/api/docgia', {
+      Ho: lastname.value,
+      Ten: firstname.value,
+      GioiTinh: gender.value,
+      DienThoai: phone.value,
+      DiaChi: address.value,
+      Username: username.value,
+      MatKhau: password.value
+    });
+
+    localStorage.setItem('token', res.data.token);
+
+    success.value = 'Đăng ký thành công!';
+    setTimeout(() => {
+      router.push('/login');
+    }, 1000);
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Đăng ký thất bại!';
+    success.value = '';
+  }
+};
+
 </script>
 
 <style scoped>

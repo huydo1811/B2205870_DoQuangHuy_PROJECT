@@ -1,5 +1,7 @@
 const MongoDB = require("../utils/mongodb.util");
 const DocGiaService = require("../services/docgia.service");
+const jwt = require("jsonwebtoken");
+const SECRET_KEY = process.env.JWT_SECRET || "khoabimatla18112004";
 
 exports.create = async (req, res, next) => {
     try {
@@ -21,13 +23,45 @@ exports.create = async (req, res, next) => {
             }
         }
 
+        // Kiểm tra độ dài Username
+        if (!req.body.Username || req.body.Username.length < 6) {
+            return res.status(400).send({ message: "Username phải có ít nhất 6 ký tự!" });
+        }
+
+        // Kiểm tra độ dài Mật khẩu
+        if (!req.body.MatKhau || req.body.MatKhau.length < 6) {
+            return res.status(400).send({ message: "Mật khẩu phải có ít nhất 6 ký tự!" });
+        }
+
+        // Kiểm tra độ dài SDT
+        if (!req.body.DienThoai || req.body.DienThoai.length < 10 || req.body.DienThoai.length > 11) {
+            return res.status(400).send({ message: "SDT phải có từ 10-11 ký tự!" });
+        }
+
         // Thêm trường Role mặc định là "user"
         req.body.Role = "user";
 
         // Tạo mã độc giả ngẫu nhiên
-        req.body.MaDocGia = "DG" + Date.now() + Math.floor(Math.random() * 1000);
+        req.body.MaSach = "DG" + Math.random().toString().slice(2, 12);
+
         const result = await service.create(req.body);
-        res.send({ message: "Tạo độc giả thành công!", data: result });
+
+        // Tạo JWT
+        const token = jwt.sign(
+            {
+                MaDocGia: req.body.MaDocGia,
+                Username: req.body.Username,
+                Role: req.body.Role
+            },
+            SECRET_KEY,
+            { expiresIn: "7d" }
+        );
+
+        res.status(201).send({
+            message: "Tạo độc giả thành công!",
+            token,
+            MaDocGia: req.body.MaDocGia
+        });
     } catch (error) {
         next(error);
     }
