@@ -6,12 +6,12 @@ import NotFound from '../views/NotFound.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
 
 const routes = [
-  { path: '/', redirect: '/login' }, 
-  { path: '/login', component: Login },
-  { path: '/register', component: Register },
-  { path: '/admin', component: AdminHome },
-  { path: '/home', component: Home },
-  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
+  { path: '/', redirect: '/login' },
+  { path: '/login', component: Login, meta: { title: 'Đăng nhập' } },
+  { path: '/register', component: Register, meta: { title: 'Đăng ký' } },
+  { path: '/admin', component: AdminHome, meta: { title: 'Quản trị viên' } },
+  { path: '/home', component: Home, meta: { title: 'Trang chủ' } },
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }
 ];
 const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +26,7 @@ router.beforeEach((to, from, next) => {
   if (authRequired && !token) {
     return next('/login');
   }
+  document.title = to.meta.title || 'Quản lý thư viện';
   next();
 });
 

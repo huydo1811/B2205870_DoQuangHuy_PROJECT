@@ -12,4 +12,5 @@ function logout() {
   localStorage.removeItem('role'); 
   router.push('/login');
 }
+
 </script>
