@@ -6,16 +6,27 @@ import NotFound from '../views/NotFound.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/login', component: Login},
+  { path: '/', redirect: '/login' }, 
+  { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/admin', component: AdminHome },
+  { path: '/home', component: Home },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
 ];
-
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/register'];
+  const authRequired = !publicPages.includes(to.path);
+  const token = localStorage.getItem('token');
+
+  if (authRequired && !token) {
+    return next('/login');
+  }
+  next();
 });
 
 export default router;

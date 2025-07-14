@@ -94,7 +94,7 @@ const handleLogin = async (e) => {
       router.push('/admin');
     } else {
 
-      router.push('/');
+      router.push('/home');
     }
   } catch (err) {
     error.value = err.response?.data?.message || 'Đăng nhập thất bại!';
