@@ -5,6 +5,7 @@ const config = require("./app/config");
 const ApiError = require("./app/api-error");
 const docgiaRoute = require("./app/routes/docgia.route");
 const nhanvienRoute = require("./app/routes/nhanvien.route");
+const nhaxuatbanRoute = require("./app/routes/nhaxuatban.route");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 
 app.use("/docgia", docgiaRoute);
 app.use("/nhanvien", nhanvienRoute);
+app.use("/nhaxuatban", nhaxuatbanRoute);
 
 // Xử lý route không tồn tại
 app.use((req, res, next) => {
