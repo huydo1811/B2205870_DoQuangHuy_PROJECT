@@ -3,11 +3,13 @@ import Home from '../views/user/Home.vue';
 import Login from '../views/user/Login.vue';
 import Register from '../views/user/Register.vue';
 import NotFound from '../views/NotFound.vue';
+import AdminHome from '../views/admin/AdminHome.vue';
 
 const routes = [
   { path: '/', component: Home },
   { path: '/login', component: Login},
   { path: '/register', component: Register },
+  { path: '/admin', component: AdminHome },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }
 ];
 

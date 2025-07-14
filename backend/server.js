@@ -8,6 +8,7 @@ const nhanvienRoute = require("./app/routes/nhanvien.route");
 const nhaxuatbanRoute = require("./app/routes/nhaxuatban.route");
 const sachRoute = require("./app/routes/sach.route");
 const theodoimuonsachRoute = require("./app/routes/theodoimuonsach.route");
+const authRoute = require("./app/routes/auth.route");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api/nhanvien", nhanvienRoute);
 app.use("/api/nhaxuatban", nhaxuatbanRoute);
 app.use("/api/sach", sachRoute);
 app.use("/api/theodoimuonsach", theodoimuonsachRoute);
+app.use("/api/auth", authRoute);
 
 // Xử lý route không tồn tại
 app.use((req, res, next) => {

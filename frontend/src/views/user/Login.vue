@@ -2,7 +2,8 @@
   <div class="login-bg d-flex flex-column justify-content-center align-items-center">
     <div class="card login-card">
       <div class="login-header fs-2">ĐĂNG NHẬP</div>
-      <form class="login-body px-5 py-4">
+      <div v-if="error" class="alert alert-danger mt-2">{{ error }}</div>
+      <form class="login-body px-5 py-4" @submit.prevent="handleLogin">
         <div class="form-group mb-4 position-relative">
           <!-- Icon user -->
           <span class="input-icon">
@@ -64,9 +65,41 @@
 
 <script setup>
 import { ref } from 'vue';
+import api from '../../services/api.service';
+import { useRouter } from 'vue-router';
+
 const username = ref('');
 const password = ref('');
 const showPassword = ref(false);
+const error = ref('');
+const router = useRouter();
+
+const handleLogin = async (e) => {
+  e.preventDefault();
+  error.value = '';
+
+  try {
+    const res = await api.post('/api/auth/login', {
+      Username: username.value,
+      MatKhau: password.value
+    });
+
+    // Lưu token và role vào localStorage
+    localStorage.setItem('token', res.data.token);
+    localStorage.setItem('role', res.data.Role);
+
+    // Chuyển hướng tuỳ theo role
+    if (res.data.Role === 'admin') {
+
+      router.push('/admin');
+    } else {
+
+      router.push('/');
+    }
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Đăng nhập thất bại!';
+  }
+};
 </script>
 
 <style scoped>
