@@ -17,6 +17,9 @@ exports.findAll = async (req, res, next) => {
     try {
         const service = new NhaXuatBanService(MongoDB.client);
         const result = await service.findAll();
+        if (!result || result.length === 0) {
+            return res.status(404).send({ message: "Chưa có nhà xuất bản nào trong hệ thống." });
+        }
         res.send(result);
     } catch (error) {
         next(error);
