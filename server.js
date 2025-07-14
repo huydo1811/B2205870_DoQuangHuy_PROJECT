@@ -7,6 +7,7 @@ const docgiaRoute = require("./app/routes/docgia.route");
 const nhanvienRoute = require("./app/routes/nhanvien.route");
 const nhaxuatbanRoute = require("./app/routes/nhaxuatban.route");
 const sachRoute = require("./app/routes/sach.route");
+const theodoimuonsachRoute = require("./app/routes/theodoimuonsach.route");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/docgia", docgiaRoute);
 app.use("/nhanvien", nhanvienRoute);
 app.use("/nhaxuatban", nhaxuatbanRoute);
 app.use("/sach", sachRoute);
+app.use("/theodoimuonsach", theodoimuonsachRoute);
 
 // Xử lý route không tồn tại
 app.use((req, res, next) => {
