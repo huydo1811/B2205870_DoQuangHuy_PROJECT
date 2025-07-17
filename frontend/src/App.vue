@@ -1,5 +1,6 @@
 <template>
   <Header v-if="!isLoginOrRegisterPage" />
+  <Navbar v-if="!isLoginOrRegisterPage" />
   <router-view />
   <Footer v-if="!isLoginOrRegisterPage" />
 </template>
@@ -9,6 +10,7 @@
 import { useRoute } from 'vue-router';
 import { computed } from 'vue';
 import Header from './components/user/Header.vue';
+import Navbar from './components/user/Navbar.vue';
 import Footer from './components/user/Footer.vue';
 
 const route = useRoute();
