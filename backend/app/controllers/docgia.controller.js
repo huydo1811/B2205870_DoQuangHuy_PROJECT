@@ -2,7 +2,7 @@ const MongoDB = require("../utils/mongodb.util");
 const DocGiaService = require("../services/docgia.service");
 const NhanVienService = require("../services/nhanvien.service");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = process.env.JWT_SECRET || "khoabimatla18112004";
+const SECRET_KEY = process.env.JWT;
 
 exports.create = async (req, res, next) => {
     try {
@@ -46,13 +46,14 @@ exports.create = async (req, res, next) => {
         req.body.Role = "user";
 
         // Tạo mã độc giả ngẫu nhiên
-        req.body.MaSach = "DG" + Math.random().toString().slice(2, 12);
+        req.body.MaDocGia = "DG" + Math.random().toString().slice(2, 12);
 
         const result = await service.create(req.body);
 
         // Tạo JWT
         const token = jwt.sign(
             {
+                id: result.insertedId,
                 MaDocGia: req.body.MaDocGia,
                 Username: req.body.Username,
                 Role: req.body.Role
@@ -137,3 +138,6 @@ exports.delete = async (req, res, next) => {
         next(error);
     }
 };
+
+const { ObjectId } = require("mongodb");
+

@@ -4,6 +4,7 @@ import Login from '../views/user/Login.vue';
 import Register from '../views/user/Register.vue';
 import NotFound from '../views/NotFound.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
+import UpdateInfo from '../views/user/UpdateInfo.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -11,6 +12,7 @@ const routes = [
   { path: '/register', component: Register, meta: { title: 'Đăng ký' } },
   { path: '/admin', component: AdminHome, meta: { title: 'Quản trị viên' } },
   { path: '/home', component: Home, meta: { title: 'Trang chủ' } },
+  { path: '/update-info', component: UpdateInfo },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }
 ];
 const router = createRouter({
@@ -20,7 +22,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const publicPages = ['/login', '/register'];
-  const authRequired = !publicPages.includes(to.path);
+  const isNotFound = to.name === 'NotFound';
+  const authRequired = !publicPages.includes(to.path) && !isNotFound;
   const token = localStorage.getItem('token');
 
   if (authRequired && !token) {

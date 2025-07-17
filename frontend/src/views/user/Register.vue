@@ -93,8 +93,6 @@ const handleRegister = async () => {
       MatKhau: password.value
     });
 
-    localStorage.setItem('token', res.data.token);
-
     success.value = 'Đăng ký thành công!';
     setTimeout(() => {
       router.push('/login');

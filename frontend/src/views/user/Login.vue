@@ -55,9 +55,22 @@
           </span>
         </div>
         <button type="submit" class="btn btn-login w-100 mb-3">Đăng nhập</button>
-        <div class="text-center mt-2">
-          <router-link to="/register" class="login-link">Chưa có tài khoản? Đăng ký</router-link>
-        </div>
+        <div class="oauth-divider my-3 text-center">
+                  <span>Hoặc đăng nhập bằng</span>
+                </div>
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                <GoogleLogin
+                  :callback="onGoogleSuccess"
+                  :prompt="true"
+                  class="btn btn-oauth google"
+                >
+                <svg width="20" height="20" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M24 9.5c3.54 0 6.73 1.22 9.24 3.22l6.93-6.93C36.45 2.34 30.59 0 24 0 14.61 0 6.26 5.48 1.98 13.44l8.07 6.27C12.43 13.04 17.77 9.5 24 9.5z"/><path fill="#34A853" d="M46.1 24.5c0-1.64-.15-3.22-.43-4.75H24v9.02h12.44c-.54 2.9-2.18 5.36-4.64 7.02l7.19 5.6C43.74 37.36 46.1 31.45 46.1 24.5z"/><path fill="#FBBC05" d="M13.05 28.73c-1.13-3.36-1.13-6.96 0-10.32l-8.07-6.27C2.19 16.61 0 20.99 0 25.5c0 4.51 2.19 8.89 5.98 12.36l8.07-6.27z"/><path fill="#EA4335" d="M24 46c6.59 0 12.45-2.17 16.93-5.93l-7.19-5.6c-2.01 1.35-4.59 2.13-7.74 2.13-6.23 0-11.57-3.54-14.95-8.73l-8.07 6.27C6.26 42.52 14.61 48 24 48z"/></g></svg>
+                  Google
+                </GoogleLogin>
+                </div>
+                <div class="text-center mt-2">
+                  <router-link to="/register" class="login-link">Chưa có tài khoản? Đăng ký</router-link>
+                </div>      
       </form>
     </div>
   </div>
@@ -67,6 +80,8 @@
 import { ref } from 'vue';
 import api from '../../services/api.service';
 import { useRouter } from 'vue-router';
+import { GoogleLogin } from 'vue3-google-login';
+
 
 const username = ref('');
 const password = ref('');
@@ -100,6 +115,33 @@ const handleLogin = async (e) => {
     error.value = err.response?.data?.message || 'Đăng nhập thất bại!';
   }
 };
+
+function onGoogleSuccess(response) {
+  const code = response.code;
+  if (!code) {
+    error.value = 'Không nhận được code từ Google!';
+    return;
+  }
+
+  api.post('/api/auth/google', { code })
+    .then(res => {
+      const token = res.data.token;
+      const info = res.data.info;
+      console.log(info);
+      localStorage.setItem('maDocGia', info.MaDocGia);
+      localStorage.setItem('token', token);
+
+      if (!info?.DienThoai || !info?.DiaChi || !info?.GioiTinh) {
+        router.push('/update-info');
+      } else {
+        router.push('/home');
+      }
+    })
+    .catch(err => {
+      error.value = err.response?.data?.message || 'Đăng nhập Google thất bại!';
+    });
+}
+
 </script>
 
 <style scoped>
@@ -210,6 +252,34 @@ const handleLogin = async (e) => {
     cursor: pointer;
     user-select: none;
     z-index: 2;
+}
+
+.oauth-divider {
+  font-size: 1rem;
+  color: #888;
+  margin-bottom: 8px;
+}
+.btn-oauth {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  border: none;
+  padding: 8px 18px;
+  font-weight: 600;
+  font-size: 1rem;
+  background: #f4faff;
+  color: #333;
+  box-shadow: 0 2px 8px 0 rgba(31, 38, 135, 0.08);
+  transition: background 0.2s;
+}
+.btn-oauth.google:hover {
+  background: #e7f5ff;
+  color: #4285F4;
+}
+.btn-oauth.facebook:hover {
+  background: #e7f5ff;
+  color: #1877F3;
 }
 </style>
 
