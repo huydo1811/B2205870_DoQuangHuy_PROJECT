@@ -127,7 +127,6 @@ function onGoogleSuccess(response) {
     .then(res => {
       const token = res.data.token;
       const info = res.data.info;
-      console.log(info);
       localStorage.setItem('maDocGia', info.MaDocGia);
       localStorage.setItem('token', token);
 
