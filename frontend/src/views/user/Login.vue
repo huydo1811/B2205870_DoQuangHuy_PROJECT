@@ -100,6 +100,8 @@ const handleLogin = async (e) => {
     });
 
     // Lưu token và role vào localStorage
+    localStorage.clear();
+    localStorage.setItem('maDocGia', res.data.MaDocGia);
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('role', res.data.Role);
 
@@ -127,6 +129,7 @@ function onGoogleSuccess(response) {
     .then(res => {
       const token = res.data.token;
       const info = res.data.info;
+      localStorage.clear();
       localStorage.setItem('maDocGia', info.MaDocGia);
       localStorage.setItem('token', token);
 

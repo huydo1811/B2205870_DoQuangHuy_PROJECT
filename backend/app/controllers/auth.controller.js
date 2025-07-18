@@ -57,6 +57,7 @@ exports.login = async (req, res, next) => {
         res.json({
             message: "Đăng nhập thành công!",
             token,
+            MaDocGia: user.MaDocGia,
             Role: role,
             info: user
         });

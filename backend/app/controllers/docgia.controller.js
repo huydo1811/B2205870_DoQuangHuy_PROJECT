@@ -140,4 +140,30 @@ exports.delete = async (req, res, next) => {
 };
 
 const { ObjectId } = require("mongodb");
+const bcrypt = require("bcryptjs");
+
+exports.changePassword = async (req, res, next) => {
+    try {
+        const service = new DocGiaService(MongoDB.client);
+        const user = await service.findByMaDocGia(req.params.madocgia);
+        if (!user) return res.status(404).send({ message: "Không tìm thấy độc giả!" });
+
+        // Kiểm tra mật khẩu hiện tại
+        const isMatch = await bcrypt.compare(req.body.currentPassword, user.MatKhau);
+        if (!isMatch) {
+            return res.status(400).send({ message: "Mật khẩu hiện tại không đúng!" });
+        }
+
+        // Hash mật khẩu mới
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(req.body.newPassword, salt);
+
+        // Cập nhật mật khẩu mới
+        await service.update(req.params.madocgia, { MatKhau: hashed });
+
+        res.send({ message: "Đổi mật khẩu thành công!" });
+    } catch (error) {
+        next(error);
+    }
+};
 

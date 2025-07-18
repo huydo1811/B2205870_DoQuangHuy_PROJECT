@@ -7,6 +7,7 @@ import AdminHome from '../views/admin/AdminHome.vue';
 import UpdateInfo from '../views/user/UpdateInfo.vue';
 import Contact from '../views/user/Contact.vue';
 import Guide from '../views/user/Guide.vue';
+import Account from '../views/user/Account.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -17,6 +18,7 @@ const routes = [
   { path: '/update-info', component: UpdateInfo },
   { path: '/contact', component: Contact, meta: { title: 'Liên hệ' } },
   { path: '/guide', component: Guide, meta: { title: 'Hướng dẫn mượn sách' } },
+  { path: '/account', component: Account, meta: { title: 'Tài khoản' } },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }
 ];
 const router = createRouter({

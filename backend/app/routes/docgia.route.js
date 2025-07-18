@@ -9,5 +9,6 @@ router.get("/madocgia/:madocgia", docGiaController.findByMaDocGia);
 router.get("/sdt/:sodienthoai", docGiaController.findBySoDienThoai);
 router.put("/:madocgia", docGiaController.update);
 router.delete("/:madocgia", docGiaController.delete);
+router.put("/:madocgia/password", docGiaController.changePassword);
 
 module.exports = router;
