@@ -41,7 +41,7 @@
               <h5 class="card-title ms-2 mb-0">Tủ sách của bạn</h5>
             </div>
             <p class="card-text">Xem danh sách sách bạn đã mượn, đang mượn được hiển thị chi tiết.</p>
-            <a href="#" class="btn btn-gradient">Truy cập</a>
+            <router-link to="/history" class="btn btn-gradient">Truy cập</router-link>          
           </div>
         </div>
       </div>

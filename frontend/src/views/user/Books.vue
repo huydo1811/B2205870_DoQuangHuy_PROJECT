@@ -1,10 +1,10 @@
 <template>
   <main class="container my-5 animate-fadein">
     <div class="text-center mb-4">
-      <h2 class="books-title">
-        <i class="bi bi-journal-bookmark-fill me-2 text-primary"></i>
-        Danh mục Sách
-      </h2>
+      <span class="section-hero-icon mb-2">
+        <i class="bi bi-journal-bookmark-fill"></i>
+      </span>
+      <h2 class="section-title">Danh mục Sách</h2>
       <p class="text-muted">Khám phá những cuốn sách nổi bật của thư viện</p>
     </div>
 
@@ -278,5 +278,24 @@ function clearFilter() {
 .btn-gradient:hover {
   background: linear-gradient(90deg, #74c0fc 0%, #339af0 100%);
   box-shadow: 0 4px 16px rgba(51, 154, 240, 0.4);
+}
+.section-hero-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  background: linear-gradient(90deg, #339af0 60%, #74c0fc 100%);
+  color: #fff;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 4px 16px 0 #339af055;
+  margin-bottom: 0.5rem;
+}
+.section-title {
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: #339af0;
+  margin-bottom: 0.2rem;
 }
 </style>

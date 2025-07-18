@@ -9,6 +9,7 @@ import Contact from '../views/user/Contact.vue';
 import Guide from '../views/user/Guide.vue';
 import Account from '../views/user/Account.vue';
 import Books from '../views/user/Books.vue';
+import History from '../views/user/History.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -21,6 +22,7 @@ const routes = [
   { path: '/guide', component: Guide, meta: { title: 'Hướng dẫn mượn sách' } },
   { path: '/account', component: Account, meta: { title: 'Tài khoản' } },
   { path: '/books', component: Books, meta: { title: 'Sách' } },
+  { path: '/history', component: History, meta: { title: 'Lịch sử mượn sách' } },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }
 ];
 const router = createRouter({

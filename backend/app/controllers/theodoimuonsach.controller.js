@@ -78,7 +78,19 @@ exports.findByMaMuonSach = async (req, res, next) => {
 exports.findByMaDocGia = async (req, res, next) => {
     try {
         const service = new TheoDoiMuonSachService(MongoDB.client);
+        const sachService = new SachService(MongoDB.client);
         const result = await service.findByMaDocGia(req.params.madocgia);
+
+        // Lấy danh sách mã sách
+        const sachMap = {};
+        for (const item of result) {
+            if (!sachMap[item.MaSach]) {
+                const sach = await sachService.findByMaSach(item.MaSach);
+                sachMap[item.MaSach] = sach ? sach.TenSach : '';
+            }
+            item.TenSach = sachMap[item.MaSach];
+        }
+
         res.send(result);
     } catch (error) {
         next(error);

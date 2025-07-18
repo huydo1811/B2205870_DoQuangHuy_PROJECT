@@ -2,7 +2,7 @@
   <header class="custom-header">
     <div class="container d-flex flex-wrap flex-md-nowrap justify-content-between align-items-center">
       <router-link to="/home" class="mb-2 mb-md-0 text-decoration-none">
-        <h1 class="mb-0 fs-4 fs-md-2">📚 Thư viện Ước mơ</h1>
+        <h1 class="mb-0 fs-2 fs-md-2">📚 Thư viện Ước mơ</h1>
       </router-link>
       <form class="d-flex mb-2 mb-md-0 me-md-3 flex-grow-1" role="search" style="max-width: 320px;">
         <input class="form-control me-2" type="search" placeholder="Tìm sách..." aria-label="Search">

@@ -214,7 +214,7 @@ onMounted(fetchUser);
 .account-title {
   font-weight: 700;
   color: #339af0;
-  font-size: 2rem;
+  font-size: 2.2rem;
 }
 .btn-gradient {
   background: linear-gradient(90deg, #339af0 60%, #74c0fc 100%);
