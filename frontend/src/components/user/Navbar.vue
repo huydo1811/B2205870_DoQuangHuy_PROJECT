@@ -1,6 +1,18 @@
 <template>
   <nav class="custom-navbar navbar navbar-expand-lg bg-white shadow-sm">
-    <div class="container justify-content-center">
+    <div class="container">
+      <!-- Logo hoặc tên thư viện nếu muốn -->
+      <button
+        class="navbar-toggler ms-auto"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -54,5 +66,20 @@
   box-shadow: 0 4px 16px 0 #339af055;
   transform: translateY(-2px) scale(1.05);
   text-decoration: none;
+}
+
+/* Responsive: nav dọc trên mobile */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .navbar-nav .nav-link {
+    width: 100%;
+    margin: 2px 0;
+    padding: 12px 18px;
+    font-size: 1.1rem;
+  }
 }
 </style>

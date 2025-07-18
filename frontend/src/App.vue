@@ -1,10 +1,11 @@
 <template>
-  <Header v-if="!isLoginOrRegisterPage" />
-  <Navbar v-if="!isLoginOrRegisterPage" />
-  <router-view />
-  <Footer v-if="!isLoginOrRegisterPage" />
+  <div class="app-wrapper">
+    <Header v-if="!isLoginOrRegisterPage" />
+    <Navbar v-if="!isLoginOrRegisterPage" />
+    <router-view />
+    <Footer v-if="!isLoginOrRegisterPage" />
+  </div>
 </template>
-
 
 <script setup>
 import { useRoute } from 'vue-router';
@@ -19,3 +20,14 @@ const isLoginOrRegisterPage = computed(() =>
 );
 
 </script>
+
+<style>
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+main {
+  flex: 1;
+}
+</style>

@@ -15,7 +15,7 @@
               <h5 class="card-title ms-2 mb-0">Sách mới</h5>
             </div>
             <p class="card-text">Khám phá những đầu sách mới nhất được cập nhật hàng tuần.</p>
-            <a href="#" class="btn btn-gradient">Xem thêm</a>
+            <router-link to="/books" class="btn btn-gradient">Xem thêm</router-link>          
           </div>
         </div>
       </div>
@@ -28,7 +28,8 @@
               <h5 class="card-title ms-2 mb-0">Hướng dẫn mượn sách</h5>
             </div>
             <p class="card-text">Tìm hiểu cách mượn sách, trả sách và theo dõi lịch sử mượn.</p>
-            <router-link to="/guide" class="btn btn-gradient">Xem thêm</router-link>          </div>
+            <router-link to="/guide" class="btn btn-gradient">Xem thêm</router-link>          
+          </div>
         </div>
       </div>
       <div class="col-md-4">
