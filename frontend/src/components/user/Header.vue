@@ -2,7 +2,7 @@
   <header class="custom-header">
     <div class="container d-flex justify-content-between align-items-center">
       <router-link to="/home" class="mb-0 text-decoration-none">
-        <h1 class="mb-0">📚 Thư viện ước mơ</h1>
+        <h1 class="mb-0">📚 Thư viện Ước mơ</h1>
       </router-link>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Tìm sách..." aria-label="Search">

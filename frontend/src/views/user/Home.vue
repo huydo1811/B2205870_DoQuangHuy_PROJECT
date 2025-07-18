@@ -1,5 +1,5 @@
 <template>
-  <main class="container my-5">
+  <main class="container my-5 animate-fadein">
     <div class="text-center mb-4">
       <h2 class="home-title">Chào mừng đến với Thư viện Ước mơ!</h2>
       <p class="home-slogan">Khám phá tri thức, chạm tới ước mơ của bạn.</p>
@@ -28,8 +28,7 @@
               <h5 class="card-title ms-2 mb-0">Hướng dẫn mượn sách</h5>
             </div>
             <p class="card-text">Tìm hiểu cách mượn sách, trả sách và theo dõi lịch sử mượn.</p>
-            <a href="#" class="btn btn-gradient">Xem thêm</a>
-          </div>
+            <router-link to="/books" class="btn btn-gradient">Xem thêm</router-link>          </div>
         </div>
       </div>
       <div class="col-md-4">
@@ -50,6 +49,14 @@
 </template>
 
 <style scoped>
+.animate-fadein {
+  animation: fadeInUp 0.6s ease-in-out;
+}
+@keyframes fadeInUp {
+  0% { transform: translateY(40px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
 .home-title {
   font-weight: 700;
   font-size: 2.2rem;

@@ -5,6 +5,7 @@ import Register from '../views/user/Register.vue';
 import NotFound from '../views/NotFound.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
 import UpdateInfo from '../views/user/UpdateInfo.vue';
+import Contact from '../views/user/Contact.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -13,6 +14,7 @@ const routes = [
   { path: '/admin', component: AdminHome, meta: { title: 'Quản trị viên' } },
   { path: '/home', component: Home, meta: { title: 'Trang chủ' } },
   { path: '/update-info', component: UpdateInfo },
+  { path: '/contact', component: Contact, meta: { title: 'Liên hệ' } },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }
 ];
 const router = createRouter({
