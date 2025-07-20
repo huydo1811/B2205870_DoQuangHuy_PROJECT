@@ -9,13 +9,23 @@
         <span class="admin-user">
           <i class="bi bi-person-circle me-1"></i> Admin
         </span>
-        <button class="btn btn-gradient">
+        <button class="btn btn-gradient" @click="logout">
           <i class="bi bi-box-arrow-right"></i> Đăng xuất
         </button>
       </div>
     </div>
   </header>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router';
+const router = useRouter();
+
+function logout() {
+  localStorage.clear();
+  router.push('/login'); 
+}
+</script>
 
 <style scoped>
 .admin-header {

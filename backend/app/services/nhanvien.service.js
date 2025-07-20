@@ -39,6 +39,10 @@ class NhanVienService {
     async delete(MaNhanVien) {
         return await this.collection.deleteOne({ MaNhanVien: MaNhanVien });
     }
+
+    async count() {
+        return await this.collection.countDocuments();
+    }
 }
 
 module.exports = NhanVienService;

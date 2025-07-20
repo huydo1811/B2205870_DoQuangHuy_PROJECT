@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post("/", sachController.create);
 router.get("/", sachController.findAll);
+router.get("/count", sachController.count);
 router.get("/:masach", sachController.findByMaSach);
 router.get("/nxb/:manxb", sachController.findByMaNXB);
 router.get("/tensach/:tensach", sachController.findByTenSach);

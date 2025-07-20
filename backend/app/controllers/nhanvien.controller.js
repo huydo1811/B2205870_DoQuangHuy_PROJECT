@@ -29,7 +29,7 @@ exports.create = async (req, res, next) => {
         req.body.Role = "admin";
 
         // Tạo mã độc giả ngẫu nhiên
-        req.body.MaNhanVien = "NV" + Date.now() + Math.floor(Math.random() * 1000);
+        req.body.MaNhanVien = "NV" + Math.random().toString().slice(2, 12);
         const result = await service.create(req.body);
         res.send({ message: "Tạo nhân viên thành công!", data: result });
     } catch (error) {
@@ -103,3 +103,13 @@ exports.delete = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.count = async (req, res, next) => {
+    try {
+        const service = new NhanVienService(MongoDB.client);
+        const count = await service.count();
+        res.send({ count });
+    } catch (error) {
+        next(error);
+    }
+}

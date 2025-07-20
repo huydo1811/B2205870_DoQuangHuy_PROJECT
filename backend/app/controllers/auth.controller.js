@@ -43,22 +43,25 @@ exports.login = async (req, res, next) => {
         }
 
         // Tạo JWT
-        const token = jwt.sign(
-            {
-                id: user._id,
-                Username: user.Username,
-                MaDocGia: user.MaDocGia,
-                Role: role
-            },
-            SECRET_KEY,
-            { expiresIn: "7d" }
-        );
+        const payload = {
+            id: user._id,
+            Username: user.Username,
+            Role: role
+        };
+        if (role === "user") {
+            payload.MaDocGia = user.MaDocGia;
+        } else if (role === "admin") {
+            payload.MaNhanVien = user.MaNhanVien;
+        }
+
+        const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "7d" });
 
         res.json({
             message: "Đăng nhập thành công!",
             token,
-            MaDocGia: user.MaDocGia,
             Role: role,
+            MaDocGia: user.MaDocGia,
+            MaNhanVien: user.MaNhanVien,
             info: user
         });
     } catch (error) {

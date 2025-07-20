@@ -47,6 +47,10 @@ class DocGiaService {
     async delete(MaDocGia) {
         return await this.collection.deleteOne({ MaDocGia: MaDocGia });
     }
+
+    async count() {
+        return await this.collection.countDocuments();
+    }
 }
 
 module.exports = DocGiaService;

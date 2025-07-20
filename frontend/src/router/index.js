@@ -53,10 +53,28 @@ router.beforeEach((to, from, next) => {
   const isNotFound = to.name === 'NotFound';
   const authRequired = !publicPages.includes(to.path) && !isNotFound;
   const token = localStorage.getItem('token');
+  const role = localStorage.getItem('role');
 
   if (authRequired && !token) {
     return next('/login');
   }
+
+  // Chặn user vào admin
+  if (to.path.startsWith('/admin')) {
+    if (role !== 'admin') {
+      return next('/home');
+    }
+  }
+
+  // Chặn admin vào user
+  if (
+    to.matched.some(r => r.path.startsWith('/') && r.path !== '/admin' && r.path !== '/login' && r.path !== '/register')
+    && role === 'admin'
+    && to.path !== '/admin'
+  ) {
+    return next('/admin');
+  }
+
   document.title = to.meta.title || 'Quản lý thư viện';
   next();
 });

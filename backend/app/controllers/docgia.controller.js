@@ -167,3 +167,12 @@ exports.changePassword = async (req, res, next) => {
     }
 };
 
+exports.count = async (req, res, next) => {
+    try {
+        const service = new DocGiaService(MongoDB.client);
+        const count = await service.count();
+        res.send({ count });
+    } catch (error) {
+        next(error);
+    }
+};

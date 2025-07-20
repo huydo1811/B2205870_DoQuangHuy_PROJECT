@@ -33,6 +33,10 @@ class NhaXuatBanService {
     async delete(MaNXB) {
         return await this.collection.deleteOne({ MaNXB: MaNXB });
     }
+
+    async count() {
+        return await this.collection.countDocuments();
+    }
 }
 
 module.exports = NhaXuatBanService;

@@ -101,16 +101,15 @@ const handleLogin = async (e) => {
 
     // Lưu token và role vào localStorage
     localStorage.clear();
-    localStorage.setItem('maDocGia', res.data.MaDocGia);
-    localStorage.setItem('token', res.data.token);
-    localStorage.setItem('role', res.data.Role);
-
-    // Chuyển hướng tuỳ theo role
     if (res.data.Role === 'admin') {
-
+      localStorage.setItem('maNhanVien', res.data.MaNhanVien);
+      localStorage.setItem('role', res.data.Role);
+      localStorage.setItem('token', res.data.token);
       router.push('/admin');
     } else {
-
+      localStorage.setItem('maDocGia', res.data.MaDocGia);
+      localStorage.setItem('role', res.data.Role);
+      localStorage.setItem('token', res.data.token);
       router.push('/home');
     }
   } catch (err) {

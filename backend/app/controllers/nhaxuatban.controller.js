@@ -68,3 +68,13 @@ exports.delete = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.count = async (req, res, next) => {
+    try {
+        const service = new NhaXuatBanService(MongoDB.client);
+        const count = await service.count();
+        res.send({ count });
+    } catch (error) {
+        next(error);
+    }
+}

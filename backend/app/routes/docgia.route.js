@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post("/", docGiaController.create);
 router.get("/", docGiaController.findAll);
+router.get("/count", docGiaController.count); // Thêm route đếm số lượng độc giả
 router.get("/ten/:tendocgia", docGiaController.findByTenDocGia);
 router.get("/madocgia/:madocgia", docGiaController.findByMaDocGia);
 router.get("/sdt/:sodienthoai", docGiaController.findBySoDienThoai);

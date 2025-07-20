@@ -43,6 +43,10 @@ class SachService {
     async delete(MaSach) {
         return await this.collection.deleteOne({ MaSach: MaSach });
     }
+
+    async count() {
+        return await this.collection.countDocuments();
+    }
 }
 
 module.exports = SachService;

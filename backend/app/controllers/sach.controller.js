@@ -101,3 +101,13 @@ exports.delete = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.count = async (req, res, next) => {
+    try {
+        const service = new SachService(MongoDB.client);
+        const count = await service.count();
+        res.json({ count });
+    } catch (error) {
+        next(error);
+    }
+};
