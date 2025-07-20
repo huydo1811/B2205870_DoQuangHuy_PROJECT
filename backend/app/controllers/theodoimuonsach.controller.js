@@ -170,3 +170,46 @@ exports.delete = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.countBorrowToday = async (req, res, next) => {
+    try {
+        const service = new TheoDoiMuonSachService(MongoDB.client);
+        const count = await service.countBorrowToday();
+        res.send({ message: "Số lượng phiếu mượn trong ngày hôm nay", count });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.borrowStats = async (req, res, next) => {
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const service = new TheoDoiMuonSachService(MongoDB.client);
+    const stats = await service.borrowStats(days);
+    res.json(stats);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.topBooks = async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 5;
+    const service = new TheoDoiMuonSachService(MongoDB.client);
+    const stats = await service.topBooks(limit);
+    res.json(stats);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.registerStats = async (req, res, next) => {
+  try {
+    const months = parseInt(req.query.months) || 6;
+    const service = new DocGiaService(MongoDB.client);
+    const stats = await service.registerStats(months);
+    res.json(stats);
+  } catch (error) {
+    next(error);
+  }
+};

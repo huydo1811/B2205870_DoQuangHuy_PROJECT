@@ -18,51 +18,128 @@
         </div>
       </div>
     </div>
-    <div class="mt-5">
-      <h5 class="fw-semibold mb-3">📅 Hoạt động gần đây</h5>
-      <ul class="list-group">
-        <li v-for="(log, i) in recentActivities" :key="i" class="list-group-item d-flex justify-content-between align-items-center">
-          <span><i class="bi bi-clock me-2 text-primary"></i>{{ log }}</span>
-          <span class="badge bg-light text-secondary">Hôm nay</span>
-        </li>
-      </ul>
+    <div class="row mt-5">
+      <div class="col-md-6 mb-4">
+        <h5 class="fw-semibold mb-3">📊 Lượt mượn theo ngày</h5>
+        <canvas id="borrowByDayChart"></canvas>
+      </div>
+      <div class="col-md-6 mb-4">
+        <h5 class="fw-semibold mb-3">📚 Top 5 sách được mượn nhiều nhất</h5>
+        <canvas id="topBooksChart"></canvas>
+      </div>
     </div>
   </main>
 </template>
 
 <script setup>
-const stats = [
+import { ref, onMounted } from 'vue';
+import api from '../../services/api.service';
+import Chart from 'chart.js/auto';
+
+const stats = ref([
   {
     label: 'Tổng số sách',
-    value: 180,
+    value: 0,
     icon: 'bi bi-journal-richtext text-white fs-4',
     bg: '#339af0'
   },
   {
     label: 'Tổng độc giả',
-    value: 120,
+    value: 0,
     icon: 'bi bi-person-lines-fill text-white fs-4',
     bg: '#51cf66'
   },
   {
     label: 'Lượt mượn hôm nay',
-    value: 12,
+    value: 0,
     icon: 'bi bi-arrow-left-right text-white fs-4',
     bg: '#fcc419'
   },
   {
     label: 'Nhân viên hệ thống',
-    value: 3,
+    value: 0,
     icon: 'bi bi-person-badge text-white fs-4',
     bg: '#845ef7'
   }
-];
+]);
 
-const recentActivities = [
-  'Độc giả Nguyễn Văn A mượn sách "Conan – Tập 1"',
-  'Độc giả Trần Thị B trả sách "Doraemon – Tập 5"',
-  'Nhân viên thêm sách mới "One Piece – Tập 10"'
-];
+const recentActivities = ref([]);
+
+onMounted(async () => {
+  try {
+    const sach = await api.get('/api/sach/count');
+    stats.value[0].value = sach.data.count;
+
+    const docgia = await api.get('/api/docgia/count');
+    stats.value[1].value = docgia.data.count;
+
+    const muon = await api.get('/api/theodoimuonsach/count-borrow-today');
+    stats.value[2].value = muon.data.count;
+
+    const nhanvien = await api.get('/api/nhanvien/count');
+    stats.value[3].value = nhanvien.data.count;
+
+
+
+    // Lượt mượn theo ngày
+    const borrowRes = await api.get('/api/theodoimuonsach/borrow-stats?days=7').catch(() => ({ data: [] }));
+    const borrowLabels = borrowRes.data.map(item => item.date); // ['20/07', ...]
+    const borrowData = borrowRes.data.map(item => item.count);
+    new Chart(document.getElementById('borrowByDayChart'), {
+      type: 'bar',
+      data: {
+        labels: borrowLabels,
+        datasets: [{
+          label: 'Lượt mượn',
+          data: borrowData,
+          backgroundColor: '#339af0'
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              precision: 0 // Đảm bảo chỉ hiện số nguyên
+            }
+          }
+        }
+      }
+    });
+
+    // Top 5 sách được mượn nhiều nhất
+    const topBooksRes = await api.get('/api/theodoimuonsach/top-books?limit=5').catch(() => ({ data: [] }));
+    const topBooksLabels = topBooksRes.data.map(item => item.TenSach || item.MaSach);
+    const topBooksData = topBooksRes.data.map(item => item.count);
+    const topBooksColors = ['#51cf66', '#339af0', '#fcc419', '#845ef7', '#ff6f91'];
+    new Chart(document.getElementById('topBooksChart'), {
+      type: 'bar',
+      data: {
+        labels: topBooksLabels,
+        datasets: [{
+          label: 'Số lượt mượn',
+          data: topBooksData,
+          backgroundColor: topBooksColors
+        }]
+      },
+
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1,
+              precision: 0 // Đảm bảo chỉ hiện số nguyên
+            }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+  }
+});
 </script>
 
 <style scoped>

@@ -68,7 +68,6 @@ function navigate(path) {
 .nav-item i {
   font-size: 1.2rem;
 }
-/* Responsive: chuyển sidebar thành thanh ngang trên mobile */
 @media (max-width: 991.98px) {
   .admin-sidebar {
     position: static;

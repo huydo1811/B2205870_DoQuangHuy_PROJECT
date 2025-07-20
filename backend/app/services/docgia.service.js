@@ -51,6 +51,24 @@ class DocGiaService {
     async count() {
         return await this.collection.countDocuments();
     }
+
+        async registerStats(months = 6) {
+        const result = [];
+        const now = new Date();
+        for (let i = months - 1; i >= 0; i--) {
+            const firstDay = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const nextMonth = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 1);
+
+            const count = await this.collection.countDocuments({
+            NgayDangKy: { $gte: firstDay, $lt: nextMonth }
+            });
+            result.push({
+            month: `${(firstDay.getMonth() + 1).toString().padStart(2, '0')}/${firstDay.getFullYear()}`,
+            count
+            });
+        }
+        return result;
+    }
 }
 
 module.exports = DocGiaService;

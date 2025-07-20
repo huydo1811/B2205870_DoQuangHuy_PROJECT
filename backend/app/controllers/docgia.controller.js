@@ -176,3 +176,14 @@ exports.count = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.registerStats = async (req, res, next) => {
+  try {
+    const months = parseInt(req.query.months) || 6;
+    const service = new DocGiaService(MongoDB.client);
+    const stats = await service.registerStats(months);
+    res.json(stats);
+  } catch (error) {
+    next(error);
+  }
+};
