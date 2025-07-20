@@ -6,9 +6,9 @@
         <span class="admin-title h5 mb-0">Quản trị Thư viện Ước mơ</span>
       </div>
       <div class="d-flex align-items-center gap-3">
-        <span class="admin-user">
-          <i class="bi bi-person-circle me-1"></i> Admin
-        </span>
+      <router-link to="/admin/profile" class="admin-user" style="text-decoration: none;">
+        <i class="bi bi-person-circle me-1"></i> Admin
+      </router-link>
         <button class="btn btn-gradient" @click="logout">
           <i class="bi bi-box-arrow-right"></i> Đăng xuất
         </button>

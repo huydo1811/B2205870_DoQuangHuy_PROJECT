@@ -1,6 +1,7 @@
 const MongoDB = require("../utils/mongodb.util");
 const NhanVienService = require("../services/nhanvien.service");
 const DocGiaService = require("../services/docgia.service");
+const bcrypt = require("bcryptjs");
 
 exports.create = async (req, res, next) => {
     try {
@@ -113,3 +114,22 @@ exports.count = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.changePassword = async (req, res, next) => {
+    try {
+        const service = new NhanVienService(MongoDB.client);
+        const nv = await service.findByMaNhanVien(req.params.manhanvien);
+        if (!nv) return res.status(404).send({ message: "Mã nhân viên không tồn tại" });
+
+        const { currentPassword, newPassword } = req.body;
+        const isMatch = await bcrypt.compare(currentPassword, nv.MatKhau);
+        if (!isMatch) return res.status(400).send({ message: "Mật khẩu hiện tại không đúng!" });
+
+        const hash = await bcrypt.hash(newPassword, 10);
+        await service.update(req.params.manhanvien, { MatKhau: hash });
+
+        res.send({ message: "Đổi mật khẩu thành công!" });
+    } catch (error) {
+        next(error);
+    }
+};

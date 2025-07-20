@@ -12,6 +12,7 @@ import Account from '../views/user/Account.vue';
 import Books from '../views/user/Books.vue';
 import History from '../views/user/History.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
+import AdminProfile from '../views/admin/Profile.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -37,7 +38,7 @@ const routes = [
     component: AppAdminLayout,
     children: [
       { path: '', component: AdminHome, meta: { title: 'Quản trị viên' } },
-      // ... các route admin khác (books, users, ...)
+      { path: 'profile', component: AdminProfile, meta: { title: 'Thông tin cá nhân' } }
     ]
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }
@@ -68,9 +69,8 @@ router.beforeEach((to, from, next) => {
 
   // Chặn admin vào user
   if (
-    to.matched.some(r => r.path.startsWith('/') && r.path !== '/admin' && r.path !== '/login' && r.path !== '/register')
+    to.matched.some(r => r.path === '/' && r.path !== '/login' && r.path !== '/register')
     && role === 'admin'
-    && to.path !== '/admin'
   ) {
     return next('/admin');
   }
