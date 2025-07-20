@@ -1,9 +1,9 @@
 <template>
   <header class="admin-header shadow-sm">
-    <div class="d-flex align-items-center justify-content-between h-100 px-4">
-      <div class="d-flex align-items-center gap-2">
+    <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between h-100 px-3 py-2">
+      <div class="d-flex align-items-center gap-2 mb-2 mb-md-0">
         <img class="admin-logo" src="/favicon.svg" alt="Logo" />
-        <span class="admin-title fs-2">Quản trị Thư viện Ước mơ</span>
+        <span class="admin-title h5 mb-0">Quản trị Thư viện Ước mơ</span>
       </div>
       <div class="d-flex align-items-center gap-3">
         <span class="admin-user">
@@ -19,7 +19,7 @@
 
 <style scoped>
 .admin-header {
-  height: 56px;
+  height: auto;
   background: #fff;
   color: #1864ab;
   box-shadow: 0 2px 12px #1864ab22;
@@ -29,22 +29,14 @@
   border-bottom: 2px solid #e7f5ff;
 }
 .admin-logo {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 900;
-  background: linear-gradient(90deg, #339af0 60%, #74c0fc 100%);
-  color: #fff;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #339af0 60%, #74c0fc 100%);
   box-shadow: 0 2px 8px #339af055;
-  margin-right: 8px;
-  letter-spacing: 1px;
+  object-fit: cover;
 }
 .admin-title {
-  font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: 1px;
   color: #1864ab;
@@ -68,5 +60,14 @@
   background: #1864ab;
   color: #fff;
   box-shadow: 0 4px 16px #339af055;
+}
+@media (max-width: 767.98px) {
+  .admin-logo {
+    width: 32px;
+    height: 32px;
+  }
+  .admin-title {
+    font-size: 1rem;
+  }
 }
 </style>

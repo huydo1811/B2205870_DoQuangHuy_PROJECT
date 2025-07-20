@@ -15,9 +15,16 @@
   margin-top: 32px;
   font-size: 1.05rem;
   animation: fadein 0.7s;
+  width: 100%;
 }
 @keyframes fadein {
   from { opacity: 0; transform: translateY(30px);}
   to { opacity: 1; transform: none;}
+}
+@media (max-width: 767.98px) {
+  .admin-footer {
+    font-size: 0.95rem;
+    padding: 8px 0;
+  }
 }
 </style>

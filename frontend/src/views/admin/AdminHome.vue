@@ -86,6 +86,7 @@ const recentActivities = [
   border: 1.5px solid #e7f5ff;
   box-shadow: 0 8px 32px 0 #339af055;
   padding: 24px 18px;
+  min-width: 0;
 }
 .dashboard-card:hover {
   transform: translateY(-3px) scale(1.03);
@@ -99,6 +100,20 @@ const recentActivities = [
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
+}
+@media (max-width: 767.98px) {
+  .dashboard-card {
+    padding: 16px 8px;
+    margin-bottom: 12px;
+  }
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  .admin-dashboard {
+    padding: 0 2px;
+  }
 }
 .list-group-item {
   border: none;

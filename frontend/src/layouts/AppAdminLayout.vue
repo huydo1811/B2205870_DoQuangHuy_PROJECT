@@ -42,6 +42,9 @@ import AdminFooter from '../components/admin/Footer.vue';
     margin-left: 0;
     padding: 16px 4px 0 4px;
   }
+  .d-flex {
+    flex-direction: column;
+  }
 }
 @keyframes fadein {
   from { opacity: 0; transform: translateY(30px);}

@@ -1,6 +1,6 @@
 <template>
   <aside class="admin-sidebar shadow animate-slidein">
-    <ul class="list-unstyled">
+    <ul class="list-unstyled mb-0">
       <li
         v-for="item in navItems"
         :key="item.title"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 const router = useRouter();
 const navItems = [
   { title: "Trang chủ", path: "/admin", icon: "bi bi-house-door" },
@@ -41,6 +41,7 @@ function navigate(path) {
   box-shadow: 2px 0 16px #339af022;
   z-index: 1000;
   animation: slidein 0.7s;
+  transition: left 0.3s, width 0.3s;
 }
 @keyframes slidein {
   from { opacity: 0; transform: translateX(-40px);}
@@ -66,5 +67,34 @@ function navigate(path) {
 }
 .nav-item i {
   font-size: 1.2rem;
+}
+/* Responsive: chuyển sidebar thành thanh ngang trên mobile */
+@media (max-width: 991.98px) {
+  .admin-sidebar {
+    position: static;
+    width: 100vw;
+    height: auto;
+    top: 0;
+    box-shadow: none;
+    border-right: none;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0 0 8px 0;
+  }
+  .admin-sidebar ul {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+    padding: 0 8px;
+  }
+  .nav-item {
+    border-radius: 10px;
+    margin: 0 4px 0 0;
+    padding: 10px 12px;
+    font-size: 1rem;
+    white-space: nowrap;
+  }
 }
 </style>
