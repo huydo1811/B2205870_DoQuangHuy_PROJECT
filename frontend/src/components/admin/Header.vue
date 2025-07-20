@@ -7,7 +7,7 @@
       </div>
       <div class="d-flex align-items-center gap-3">
       <router-link to="/admin/profile" class="admin-user" style="text-decoration: none;">
-        <i class="bi bi-person-circle me-1"></i> Admin
+        <i class="bi bi-person-circle me-1"></i> Quản trị viên
       </router-link>
         <button class="btn btn-gradient" @click="logout">
           <i class="bi bi-box-arrow-right"></i> Đăng xuất

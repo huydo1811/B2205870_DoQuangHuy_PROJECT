@@ -30,9 +30,13 @@
               <label class="form-label">Số điện thoại</label>
               <input v-model="admin.DienThoai" type="text" class="form-control">
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label class="form-label">Địa chỉ</label>
               <input v-model="admin.DiaChi" type="text" class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Chức vụ</label>
+              <input v-model="admin.ChucVu" type="text" class="form-control bg-light text-secondary" disabled>
             </div>
             <div class="col-md-6">
               <label class="form-label">Username</label>
@@ -89,6 +93,7 @@ const admin = ref({
   GioiTinh: '',
   DienThoai: '',
   DiaChi: '',
+  ChucVu: '', 
   Username: '',
   MaNhanVien: ''
 });

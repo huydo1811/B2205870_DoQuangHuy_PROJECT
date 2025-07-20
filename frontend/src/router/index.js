@@ -38,7 +38,8 @@ const routes = [
     component: AppAdminLayout,
     children: [
       { path: '', component: AdminHome, meta: { title: 'Quản trị viên' } },
-      { path: 'profile', component: AdminProfile, meta: { title: 'Thông tin cá nhân' } }
+      { path: 'profile', component: AdminProfile, meta: { title: 'Thông tin cá nhân' } },
+      { path: 'staff', component: () => import('../views/admin/Staff.vue'), meta: { title: 'Quản lý nhân viên' } }
     ]
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }

@@ -41,11 +41,26 @@ exports.create = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const service = new NhanVienService(MongoDB.client);
-        const result = await service.findAll();
-        if (!result || result.length === 0) {
-            return res.status(404).send({ message: "Chưa có nhân viên nào trong hệ thống." });
-        }
-        res.send(result);
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const search = req.query.search || '';
+
+        const filter = search
+            ? {
+                $or: [
+                    { HoTen: { $regex: search, $options: 'i' } },
+                    { DienThoai: { $regex: search, $options: 'i' } }
+                ]
+            }
+            : {};
+
+        const total = await service.collection.countDocuments(filter);
+        const items = await service.collection.find(filter)
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .toArray();
+
+        res.json({ items, total });
     } catch (error) {
         next(error);
     }
@@ -88,6 +103,16 @@ exports.findBySoDienThoai = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const service = new NhanVienService(MongoDB.client);
+        if (req.body.DienThoai) {
+            const existedPhone = await service.collection.findOne({
+                DienThoai: req.body.DienThoai,
+                MaNhanVien: { $ne: req.params.manhanvien }
+            });
+            if (existedPhone) {
+                return res.status(400).send({ message: "Số điện thoại đã tồn tại!" });
+            }
+        }
+
         const result = await service.update(req.params.manhanvien, req.body);
         res.send({ message: "Cập nhật nhân viên thành công!", data: result });
     } catch (error) {

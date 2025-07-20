@@ -4,7 +4,7 @@
       <li
         v-for="item in navItems"
         :key="item.title"
-        :class="['nav-item', { active: $route.path.startsWith(item.path) }]"
+        :class="['nav-item', { active: isActive(item.path) }]"
         @click="navigate(item.path)"
       >
         <i :class="item.icon" class="me-2"></i>{{ item.title }}
@@ -14,8 +14,9 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 const router = useRouter();
+const route = useRoute();
 const navItems = [
   { title: "Trang chủ", path: "/admin", icon: "bi bi-house-door" },
   { title: "Quản lý sách", path: "/admin/books", icon: "bi bi-journal-bookmark" },
@@ -25,6 +26,12 @@ const navItems = [
 ];
 function navigate(path) {
   router.push(path);
+}
+function isActive(path) {
+  if (path === '/admin') {
+    return route.path === '/admin';
+  }
+  return route.path === path || route.path.startsWith(path + '/');
 }
 </script>
 
