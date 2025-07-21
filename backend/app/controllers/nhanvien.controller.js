@@ -158,3 +158,24 @@ exports.changePassword = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const service = new NhanVienService(MongoDB.client);
+        const id = req.params.manhanvien;
+        const newPassword = req.body.MatKhau || '123456';
+        const hashed = await bcrypt.hash(newPassword, 10);
+
+        const result = await service.collection.updateOne(
+            { MaNhanVien: id },
+            { $set: { MatKhau: hashed } }
+        );
+        if (result.modifiedCount === 1) {
+            res.json({ message: 'Đặt lại mật khẩu thành công!' });
+        } else {
+            res.status(404).json({ message: 'Không tìm thấy nhân viên!' });
+        }
+    } catch (error) {
+        next(error);
+    }
+};

@@ -62,6 +62,7 @@ exports.login = async (req, res, next) => {
             Role: role,
             MaDocGia: user.MaDocGia,
             MaNhanVien: user.MaNhanVien,
+            TenNhanVien: user.HoTen,
             info: user
         });
     } catch (error) {

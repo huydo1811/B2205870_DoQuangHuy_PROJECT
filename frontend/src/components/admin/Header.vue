@@ -7,7 +7,7 @@
       </div>
       <div class="d-flex align-items-center gap-3">
       <router-link to="/admin/profile" class="admin-user" style="text-decoration: none;">
-        <i class="bi bi-person-circle me-1"></i> Quản trị viên
+        <i class="bi bi-person-circle me-1"></i> {{ tenNhanVien || 'Quản trị viên' }}
       </router-link>
         <button class="btn btn-gradient" @click="logout">
           <i class="bi bi-box-arrow-right"></i> Đăng xuất
@@ -18,8 +18,15 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
+
+const tenNhanVien = ref('');
+
+onMounted(() => {
+  tenNhanVien.value = localStorage.getItem('tenNhanVien') || '';
+});
 
 function logout() {
   localStorage.clear();

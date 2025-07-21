@@ -10,6 +10,7 @@ router.get("/:manhanvien", nhanVienController.findByMaNhanVien);
 router.get("/sdt/:sodienthoai", nhanVienController.findBySoDienThoai);
 router.put("/:manhanvien", nhanVienController.update);
 router.put("/:manhanvien/password", nhanVienController.changePassword);
+router.put('/:manhanvien/reset-password', nhanVienController.resetPassword);
 router.delete("/:manhanvien", nhanVienController.delete);
 
 module.exports = router;

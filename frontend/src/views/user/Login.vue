@@ -105,6 +105,7 @@ const handleLogin = async (e) => {
       localStorage.setItem('maNhanVien', res.data.MaNhanVien);
       localStorage.setItem('role', res.data.Role);
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('tenNhanVien', res.data.TenNhanVien);
       router.push('/admin');
     } else {
       localStorage.setItem('maDocGia', res.data.MaDocGia);

@@ -50,7 +50,14 @@
         <tbody>
           <tr v-for="nv in nhanviens" :key="nv.MaNhanVien">
             <td>{{ nv.MaNhanVien }}</td>
-            <td>{{ nv.HoTen }}</td>
+            <td>
+              <span v-if="nv.MaNhanVien === maNhanVienDangNhap" class="text-primary fw-bold">
+                <i class="bi bi-person-circle me-1"></i>{{ nv.HoTen }} <span class="badge bg-info text-dark ms-1">Bạn</span>
+              </span>
+              <span v-else>
+                {{ nv.HoTen }}
+              </span>
+            </td>
             <td>{{ nv.GioiTinh }}</td>
             <td>{{ nv.DienThoai }}</td>
             <td>{{ nv.DiaChi }}</td>
@@ -119,6 +126,14 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-secondary" type="button" @click="closeModal">Hủy</button>
+              <button
+                v-if="isEdit"
+                class="btn btn-warning me-auto"
+                type="button"
+                @click="resetPassword"
+              >
+                <i class="bi bi-arrow-counterclockwise"></i> Reset mật khẩu
+              </button>
               <button class="btn btn-primary" type="submit">{{ isEdit ? 'Lưu' : 'Thêm' }}</button>
             </div>
           </form>
@@ -195,6 +210,8 @@ const totalPages = computed(() => Math.ceil(total.value / pageSize));
 const modalError = ref('');
 const showDeleteModal = ref(false);
 const nvToDelete = ref(null);
+
+const maNhanVienDangNhap = localStorage.getItem('maNhanVien');
 
 async function fetchNhanViens() {
   try {
@@ -335,6 +352,26 @@ watch(search, (val, oldVal) => {
 });
 
 onMounted(fetchNhanViens);
+
+async function resetPassword() {
+  if (!form.MaNhanVien) return;
+  if (!confirm('Bạn có chắc muốn đặt lại mật khẩu về 123456?')) return;
+  try {
+    await api.put(`/api/nhanvien/${form.MaNhanVien}/reset-password`, { MatKhau: '123456' });
+    modalError.value = '';
+    message.value = 'Đã đặt lại mật khẩu về 123456!';
+    success.value = true;
+    showModal.value = false;
+    await fetchNhanViens();
+  } catch (err) {
+    modalError.value = err.response?.data?.message || 'Lỗi reset mật khẩu!';
+    success.value = false;
+  }
+  setTimeout(() => {
+    message.value = '';
+    modalError.value = '';
+  }, 2500);
+}
 </script>
 
 <style scoped>
