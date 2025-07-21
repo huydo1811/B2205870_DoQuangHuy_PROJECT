@@ -104,9 +104,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import api from '../../services/api.service';
 import Swal from 'sweetalert2';
+
+const route = useRoute();
 
 const books = ref([]);
 const nxbs = ref([]);
@@ -174,7 +177,22 @@ onMounted(async () => {
     books.value = [];
     nxbs.value = [];
   }
+
+  if (route.query.TenSach) {
+    filter.value.TenSach = route.query.TenSach;
+    await onSearch();
+  }
 });
+
+watch(
+  () => route.query.TenSach,
+  (newVal) => {
+    filter.value.TenSach = newVal || '';
+    if (newVal) {
+      onSearch();
+    }
+  }
+);
 
 // Hàm lấy tên NXB theo MaNXB
 function getTenNXB(maNXB) {
@@ -270,18 +288,23 @@ function getImgUrl(img) {
   color: #339af0;
 }
 .book-card {
+  min-height: 520px;
   border-radius: 18px;
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
 }
 .book-card:hover {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 8px 32px rgba(0, 123, 255, 0.15);
 }
 .card-img-top {
-  height: 220px;
+  width: 100%;
+  height: 520px;         
   object-fit: cover;
   border-top-left-radius: 18px;
   border-top-right-radius: 18px;
+  display: block;
 }
 .btn-gradient {
   background: linear-gradient(90deg, #339af0 0%, #74c0fc 100%);

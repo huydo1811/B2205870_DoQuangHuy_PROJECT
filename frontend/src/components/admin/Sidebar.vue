@@ -20,6 +20,7 @@ const route = useRoute();
 const navItems = [
   { title: "Trang chủ", path: "/admin", icon: "bi bi-house-door" },
   { title: "Quản lý sách", path: "/admin/books", icon: "bi bi-journal-bookmark" },
+  { title: "Nhà xuất bản", path: "/admin/publishers", icon: "bi bi-building" },
   { title: "Độc giả", path: "/admin/users", icon: "bi bi-people" },
   { title: "Mượn/trả sách", path: "/admin/borrow", icon: "bi bi-arrow-left-right" },
   { title: "Nhân viên", path: "/admin/staff", icon: "bi bi-person-badge" }

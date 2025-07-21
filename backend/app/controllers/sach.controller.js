@@ -86,7 +86,9 @@ exports.findAll = async (req, res, next) => {
 exports.findAllNoPaging = async (req, res, next) => {
     try {
         const sachService = new SachService(MongoDB.client);
-        const result = await sachService.findAll();
+        const result = await sachService.collection.find({})
+            .sort({ _id: -1 })
+            .toArray();
         res.send(result);
     } catch (error) {
         next(error);
@@ -117,7 +119,11 @@ exports.findByMaNXB = async (req, res, next) => {
 exports.findByTenSach = async (req, res, next) => {
     try {
         const sachService = new SachService(MongoDB.client);
-        const result = await sachService.findByTenSach(req.params.tensach);
+        const result = await sachService.collection.find({
+            TenSach: { $regex: req.params.tensach, $options: 'i' }
+        })
+        .sort({ _id: -1 })
+        .toArray();
         if (!result || result.length === 0) return res.status(404).send({ message: "Không tìm thấy sách" });
         res.send(result);
     }
