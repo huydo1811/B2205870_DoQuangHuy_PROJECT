@@ -83,7 +83,7 @@ onMounted(async () => {
 
     // Lượt mượn theo ngày
     const borrowRes = await api.get('/api/theodoimuonsach/borrow-stats?days=7').catch(() => ({ data: [] }));
-    const borrowLabels = borrowRes.data.map(item => item.date); // ['20/07', ...]
+    const borrowLabels = borrowRes.data.map(item => item.date); 
     const borrowData = borrowRes.data.map(item => item.count);
     new Chart(document.getElementById('borrowByDayChart'), {
       type: 'bar',

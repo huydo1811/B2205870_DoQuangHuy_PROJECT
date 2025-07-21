@@ -75,11 +75,39 @@ exports.create = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const service = new DocGiaService(MongoDB.client);
-        const result = await service.findAll();
-        if (!result || result.length === 0) {
-            return res.status(404).send({ message: "Chưa có độc giả nào trong hệ thống." });
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 7; // mỗi trang 7 người dùng
+        const search = req.query.search || '';
+
+        let filter = {};
+        if (search) {
+            filter = {
+                $or: [
+                    // Ghép Ho và Ten để tìm kiếm
+                    {
+                        $expr: {
+                            $regexMatch: {
+                                input: { $concat: [ { $ifNull: ["$Ho", ""] }, " ", { $ifNull: ["$Ten", ""] } ] },
+                                regex: search,
+                                options: "i"
+                            }
+                        }
+                    },
+                    { Ho: { $regex: search, $options: 'i' } },
+                    { Ten: { $regex: search, $options: 'i' } },
+                    { DienThoai: { $regex: search, $options: 'i' } }
+                ]
+            };
         }
-        res.send(result);
+
+        const total = await service.collection.countDocuments(filter);
+        const items = await service.collection.find(filter)
+            .sort({ _id: -1 }) 
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .toArray();
+
+        res.json({ items, total });
     } catch (error) {
         next(error);
     }
@@ -88,7 +116,6 @@ exports.findAll = async (req, res, next) => {
 exports.findByMaDocGia = async (req, res, next) => {
     try {
         const service = new DocGiaService(MongoDB.client);
-        // Lấy đúng tên biến theo route
         const result = await service.findByMaDocGia(req.params.madocgia);
         if (!result) return res.status(404).send({ message: "Mã độc giả không tồn tại" });
         res.send(result);
@@ -186,4 +213,25 @@ exports.registerStats = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const service = new DocGiaService(MongoDB.client);
+        const madocgia = req.params.madocgia;
+        const newPassword = req.body.MatKhau || '123456';
+        const hashed = await bcrypt.hash(newPassword, 10);
+
+        const result = await service.collection.updateOne(
+            { MaDocGia: madocgia },
+            { $set: { MatKhau: hashed } }
+        );
+        if (result.modifiedCount === 1) {
+            res.json({ message: 'Đặt lại mật khẩu thành công!' });
+        } else {
+            res.status(404).json({ message: 'Không tìm thấy độc giả!' });
+        }
+    } catch (error) {
+        next(error);
+    }
 };

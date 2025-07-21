@@ -13,6 +13,7 @@ import Books from '../views/user/Books.vue';
 import History from '../views/user/History.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
 import AdminProfile from '../views/admin/Profile.vue';
+import Users from '../views/admin/Users.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -39,7 +40,8 @@ const routes = [
     children: [
       { path: '', component: AdminHome, meta: { title: 'Quản trị viên' } },
       { path: 'profile', component: AdminProfile, meta: { title: 'Thông tin cá nhân' } },
-      { path: 'staff', component: () => import('../views/admin/Staff.vue'), meta: { title: 'Quản lý nhân viên' } }
+      { path: 'staff', component: () => import('../views/admin/Staff.vue'), meta: { title: 'Quản lý nhân viên' } },
+      { path: 'users', component: Users, meta: { title: 'Quản lý người dùng' } }
     ]
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }

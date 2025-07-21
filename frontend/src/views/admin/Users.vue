@@ -1,7 +1,7 @@
 <template>
   <main class="container my-2 animate-fadein">
     <h2 class="fw-bold mb-4 text-primary">
-      <i class="bi bi-people me-2"></i>Quản lý nhân viên
+      <i class="bi bi-people me-2"></i>Quản lý độc giả
     </h2>
     <div class="row mb-3">
       <div class="col-md-6">
@@ -28,7 +28,7 @@
       </div>
       <div class="col-md-6 text-end">
         <button class="btn btn-success" @click="openAdd">
-          <i class="bi bi-plus-circle me-1"></i> Thêm nhân viên
+          <i class="bi bi-plus-circle me-1"></i> Thêm độc giả
         </button>
       </div>
     </div>
@@ -37,43 +37,34 @@
       <table class="table table-bordered align-middle">
         <thead class="table-light">
           <tr>
-            <th>Mã NV</th>
+            <th>Mã ĐG</th>
             <th>Họ tên</th>
             <th>Giới tính</th>
             <th>Điện thoại</th>
             <th>Địa chỉ</th>
             <th>Username</th>
-            <th>Chức vụ</th>
             <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="nv in nhanviens" :key="nv.MaNhanVien">
-            <td>{{ nv.MaNhanVien }}</td>
+          <tr v-for="dg in docgias" :key="dg.MaDocGia">
+            <td>{{ dg.MaDocGia }}</td>
+            <td>{{ (dg.Ho || '') + ' ' + (dg.Ten || '') }}</td>
+            <td>{{ dg.GioiTinh }}</td>
+            <td>{{ dg.DienThoai }}</td>
+            <td>{{ dg.DiaChi }}</td>
+            <td>{{ dg.Username }}</td>
             <td>
-              <span v-if="nv.MaNhanVien === maNhanVienDangNhap" class="text-primary fw-bold">
-                <i class="bi bi-person-circle me-1"></i>{{ nv.HoTen }} <span class="badge bg-info text-dark ms-1">Bạn</span>
-              </span>
-              <span v-else>
-                {{ nv.HoTen }}
-              </span>
-            </td>
-            <td>{{ nv.GioiTinh }}</td>
-            <td>{{ nv.DienThoai }}</td>
-            <td>{{ nv.DiaChi }}</td>
-            <td>{{ nv.Username }}</td>
-            <td>{{ nv.ChucVu }}</td>
-            <td>
-              <button class="btn btn-sm btn-primary me-2" @click="openEdit(nv)">
+              <button class="btn btn-sm btn-primary me-2" @click="openEdit(dg)">
                 <i class="bi bi-pencil"></i>
               </button>
-              <button class="btn btn-sm btn-danger" @click="openDeleteModal(nv)">
+              <button class="btn btn-sm btn-danger" @click="openDeleteModal(dg)">
                 <i class="bi bi-trash"></i>
               </button>
             </td>
           </tr>
-          <tr v-if="nhanviens.length === 0">
-            <td colspan="8" class="text-center text-muted">Chưa có nhân viên nào.</td>
+          <tr v-if="docgias.length === 0">
+            <td colspan="7" class="text-center text-muted">Chưa có độc giả nào.</td>
           </tr>
         </tbody>
       </table>
@@ -83,18 +74,22 @@
     <div class="modal fade" tabindex="-1" :class="{ show: showModal }" style="display: block;" v-if="showModal">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form @submit.prevent="saveNhanVien">
+          <form @submit.prevent="saveDocGia">
             <div v-if="modalError" class="alert alert-danger mb-2">
               {{ modalError }}
             </div>
             <div class="modal-header">
-              <h5 class="modal-title">{{ isEdit ? 'Sửa nhân viên' : 'Thêm nhân viên' }}</h5>
+              <h5 class="modal-title">{{ isEdit ? 'Sửa độc giả' : 'Thêm độc giả' }}</h5>
               <button type="button" class="btn-close" @click="closeModal"></button>
             </div>
             <div class="modal-body row g-3">
-              <div class="col-12">
-                <label class="form-label">Họ tên</label>
-                <input v-model="form.HoTen" type="text" class="form-control" required>
+              <div class="col-6">
+                <label class="form-label">Họ</label>
+                <input v-model="form.Ho" type="text" class="form-control" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Tên</label>
+                <input v-model="form.Ten" type="text" class="form-control" required>
               </div>
               <div class="col-6">
                 <label class="form-label">Giới tính</label>
@@ -119,15 +114,11 @@
                 <label class="form-label">Mật khẩu</label>
                 <input v-model="form.MatKhau" type="password" class="form-control" required>
               </div>
-              <div class="col-12">
-                <label class="form-label">Chức vụ</label>
-                <input v-model="form.ChucVu" type="text" class="form-control">
-              </div>
             </div>
             <div class="modal-footer">
               <button class="btn btn-secondary" type="button" @click="closeModal">Hủy</button>
               <button
-                v-if="isEdit"
+                v-if="isEdit && (!form.OAuthProvider || form.OAuthProvider !== 'google')"
                 class="btn btn-warning me-auto"
                 type="button"
                 @click="resetPassword"
@@ -151,11 +142,11 @@
             <button type="button" class="btn-close" @click="closeDeleteModal"></button>
           </div>
           <div class="modal-body">
-            <p>Bạn có chắc chắn muốn xóa nhân viên <b>{{ nvToDelete?.HoTen }}</b>?</p>
+            <p>Bạn có chắc chắn muốn xóa độc giả <b>{{ (dgToDelete?.Ho || '') + ' ' + (dgToDelete?.Ten || '') }}</b>?</p>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary" @click="closeDeleteModal">Hủy</button>
-            <button class="btn btn-danger" @click="delNhanVien(nvToDelete)">Xóa</button>
+            <button class="btn btn-danger" @click="delDocGia(dgToDelete)">Xóa</button>
           </div>
         </div>
       </div>
@@ -187,46 +178,45 @@
 import { ref, reactive, onMounted, computed, watch } from 'vue';
 import api from '../../services/api.service';
 
-const nhanviens = ref([]);
+const docgias = ref([]);
 const showModal = ref(false);
 const isEdit = ref(false);
 const form = reactive({
-  MaNhanVien: '',
-  HoTen: '',
+  MaDocGia: '',
+  Ho: '',
+  Ten: '',
   GioiTinh: 'Nam',
   DienThoai: '',
   DiaChi: '',
   Username: '',
   MatKhau: '',
-  ChucVu: ''
+  OAuthProvider: ''
 });
 const message = ref('');
 const success = ref(true);
 const page = ref(1);
-const pageSize = 7;
+const pageSize =7;
 const total = ref(0);
 const search = ref('');
 const totalPages = computed(() => Math.ceil(total.value / pageSize));
 const modalError = ref('');
 const showDeleteModal = ref(false);
-const nvToDelete = ref(null);
+const dgToDelete = ref(null);
 
-const maNhanVienDangNhap = localStorage.getItem('maNhanVien');
-
-async function fetchNhanViens() {
+async function fetchDocGias() {
   try {
-    const res = await api.get('/api/nhanvien', {
+    const res = await api.get('/api/docgia', {
       params: {
         page: page.value,
         pageSize,
         search: search.value
       }
     });
-    nhanviens.value = Array.isArray(res.data.items) ? res.data.items : [];
+    docgias.value = Array.isArray(res.data.items) ? res.data.items : [];
     total.value = res.data.total || 0;
   } catch (err) {
-    nhanviens.value = [];
-    message.value = 'Không thể tải danh sách nhân viên!';
+    docgias.value = [];
+    message.value = 'Không thể tải danh sách độc giả!';
     success.value = false;
     setTimeout(() => message.value = '', 2500);
   }
@@ -235,21 +225,32 @@ async function fetchNhanViens() {
 function openAdd() {
   isEdit.value = false;
   Object.assign(form, {
-    MaNhanVien: '',
-    HoTen: '',
+    MaDocGia: '',
+    Ho: '',
+    Ten: '',
     GioiTinh: 'Nam',
     DienThoai: '',
     DiaChi: '',
     Username: '',
     MatKhau: '',
-    ChucVu: ''
+    OAuthProvider: ''
   });
   showModal.value = true;
 }
 
-function openEdit(nv) {
+function openEdit(dg) {
   isEdit.value = true;
-  Object.assign(form, nv, { MatKhau: '' });
+  Object.assign(form, {
+    MaDocGia: dg.MaDocGia || '',
+    Ho: dg.Ho || '',
+    Ten: dg.Ten || '',
+    GioiTinh: dg.GioiTinh || 'Nam',
+    DienThoai: dg.DienThoai || '',
+    DiaChi: dg.DiaChi || '',
+    Username: dg.Username || '',
+    MatKhau: '',
+    OAuthProvider: dg.OAuthProvider || ''
+  });
   showModal.value = true;
 }
 
@@ -257,50 +258,49 @@ function closeModal() {
   showModal.value = false;
 }
 
-function openDeleteModal(nv) {
-  nvToDelete.value = nv;
+function openDeleteModal(dg) {
+  dgToDelete.value = dg;
   showDeleteModal.value = true;
 }
 function closeDeleteModal() {
   showDeleteModal.value = false;
-  nvToDelete.value = null;
+  dgToDelete.value = null;
 }
 
-async function saveNhanVien() {
+async function saveDocGia() {
   try {
     if (isEdit.value) {
-      await api.put(`/api/nhanvien/${form.MaNhanVien}`, {
-        HoTen: form.HoTen,
+      await api.put(`/api/docgia/${form.MaDocGia}`, {
+        Ho: form.Ho,
+        Ten: form.Ten,
         GioiTinh: form.GioiTinh,
         DienThoai: form.DienThoai,
-        DiaChi: form.DiaChi,
-        ChucVu: form.ChucVu
+        DiaChi: form.DiaChi
       });
-      message.value = 'Cập nhật nhân viên thành công!';
+      message.value = 'Cập nhật độc giả thành công!';
       modalError.value = '';
       success.value = true;
       showModal.value = false;
-      await fetchNhanViens();
+      await fetchDocGias();
     } else {
-      await api.post('/api/nhanvien', {
-        HoTen: form.HoTen,
+      await api.post('/api/docgia', {
+        Ho: form.Ho,
+        Ten: form.Ten,
         GioiTinh: form.GioiTinh,
         DienThoai: form.DienThoai,
         DiaChi: form.DiaChi,
         Username: form.Username,
-        MatKhau: form.MatKhau,
-        ChucVu: form.ChucVu
+        MatKhau: form.MatKhau
       });
-      message.value = 'Thêm nhân viên thành công!';
+      message.value = 'Thêm độc giả thành công!';
       modalError.value = '';
       success.value = true;
       showModal.value = false;
-      await fetchNhanViens();
+      await fetchDocGias();
     }
   } catch (err) {
     modalError.value = err.response?.data?.message || 'Lỗi thao tác!';
     success.value = false;
-    // Không đóng modal, không set message.value
   }
   setTimeout(() => {
     message.value = '';
@@ -308,18 +308,13 @@ async function saveNhanVien() {
   }, 2500);
 }
 
-function confirmDelete(nv) {
-  nvToDelete.value = nv;
-  showDeleteModal.value = true;
-}
-
-async function delNhanVien(nv) {
-  if (!nv) return;
+async function delDocGia(dg) {
+  if (!dg) return;
   try {
-    await api.delete(`/api/nhanvien/${nv.MaNhanVien}`);
-    message.value = 'Xóa nhân viên thành công!';
+    await api.delete(`/api/docgia/${dg.MaDocGia}`);
+    message.value = 'Xóa độc giả thành công!';
     success.value = true;
-    await fetchNhanViens();
+    await fetchDocGias();
   } catch (err) {
     message.value = err.response?.data?.message || 'Xóa thất bại!';
     success.value = false;
@@ -328,15 +323,35 @@ async function delNhanVien(nv) {
   closeDeleteModal();
 }
 
+async function resetPassword() {
+  if (!form.MaDocGia) return;
+  if (!confirm('Bạn có chắc muốn đặt lại mật khẩu về 123456?')) return;
+  try {
+    await api.put(`/api/docgia/${form.MaDocGia}/reset-password`, { MatKhau: '123456' });
+    modalError.value = '';
+    message.value = 'Đã đặt lại mật khẩu về 123456!';
+    success.value = true;
+    showModal.value = false;
+    await fetchDocGias();
+  } catch (err) {
+    modalError.value = err.response?.data?.message || 'Lỗi reset mật khẩu!';
+    success.value = false;
+  }
+  setTimeout(() => {
+    message.value = '';
+    modalError.value = '';
+  }, 2500);
+}
+
 function changePage(newPage) {
   if (newPage < 1 || newPage > totalPages.value) return;
   page.value = newPage;
-  fetchNhanViens();
+  fetchDocGias();
 }
 
 function onSearch() {
   page.value = 1;
-  fetchNhanViens();
+  fetchDocGias();
 }
 
 function clearSearch() {
@@ -347,31 +362,11 @@ function clearSearch() {
 watch(search, (val, oldVal) => {
   if (val !== oldVal && val !== '') {
     page.value = 1;
-    fetchNhanViens();
+    fetchDocGias();
   }
 });
 
-onMounted(fetchNhanViens);
-
-async function resetPassword() {
-  if (!form.MaNhanVien) return;
-  if (!confirm('Bạn có chắc muốn đặt lại mật khẩu về 123456?')) return;
-  try {
-    await api.put(`/api/nhanvien/${form.MaNhanVien}/reset-password`, { MatKhau: '123456' });
-    modalError.value = '';
-    message.value = 'Đã đặt lại mật khẩu về 123456!';
-    success.value = true;
-    showModal.value = false;
-    await fetchNhanViens();
-  } catch (err) {
-    modalError.value = err.response?.data?.message || 'Lỗi reset mật khẩu!';
-    success.value = false;
-  }
-  setTimeout(() => {
-    message.value = '';
-    modalError.value = '';
-  }, 2500);
-}
+onMounted(fetchDocGias);
 </script>
 
 <style scoped>
@@ -384,8 +379,6 @@ async function resetPassword() {
 .modal.show {
   display: block;
 }
-
-/* Hiệu ứng fadein giống adminhome */
 .animate-fadein {
   animation: fadeInUp 0.5s ease;
 }
@@ -399,6 +392,4 @@ async function resetPassword() {
     opacity: 1;
   }
 }
-
-
 </style>

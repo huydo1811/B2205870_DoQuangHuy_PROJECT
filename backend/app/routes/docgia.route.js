@@ -12,5 +12,6 @@ router.get("/sdt/:sodienthoai", docGiaController.findBySoDienThoai);
 router.put("/:madocgia", docGiaController.update);
 router.delete("/:madocgia", docGiaController.delete);
 router.put("/:madocgia/password", docGiaController.changePassword);
+router.put("/:madocgia/reset-password", docGiaController.resetPassword);
 
 module.exports = router;
