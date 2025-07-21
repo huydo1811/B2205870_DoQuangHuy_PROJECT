@@ -39,7 +39,7 @@
     <div class="row g-4" v-else>
       <div class="col-md-4 col-sm-6" v-for="book in pagedBooks" :key="book.MaSach">
         <div class="card book-card h-100 shadow-sm">
-          <img :src="book.Img || defaultImg" class="card-img-top" :alt="book.TenSach" />
+          <img :src="getImgUrl(book.Img)" class="card-img-top" :alt="book.TenSach" />
           <div class="card-body d-flex flex-column">
             <h5 class="card-title text-primary">
               <i class="bi bi-book-half me-1"></i>{{ book.TenSach }}
@@ -80,7 +80,7 @@
           </div>
           <div class="modal-body row">
             <div class="col-md-5 text-center mb-3">
-              <img :src="selectedBook?.Img || defaultImg" alt="Ảnh sách" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+              <img :src="getImgUrl(selectedBook?.Img)" alt="Ảnh sách" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
             </div>
             <div class="col-md-7">
               <p><strong>Tác giả:</strong> {{ selectedBook?.TacGia }}</p>
@@ -162,7 +162,7 @@ async function handleBorrow() {
 onMounted(async () => {
   try {
     const [resBooks, resNXB] = await Promise.all([
-      api.get('/api/sach'),
+      api.get('/api/sach/all'),
       api.get('/api/nhaxuatban')
     ]);
     books.value = resBooks.data.map(book => ({
@@ -204,12 +204,17 @@ function gotoPage(page) {
   }
 }
 
-// Khi bấm nút tìm, về trang 1
 async function onSearch() {
   currentPage.value = 1;
+  if (!filter.value.TenSach && !filter.value.TacGia && !filter.value.MaNXB) {
+    const res = await api.get('/api/sach/all');
+    books.value = res.data.map(book => ({
+      ...book,
+      DonGia: Number(book.DonGia)
+    }));
+    return;
+  }
   let url = '/api/sach';
-  let params = [];
-
   if (filter.value.TenSach) {
     url = `/api/sach/tensach/${encodeURIComponent(filter.value.TenSach)}`;
   } else if (filter.value.TacGia) {
@@ -229,7 +234,19 @@ async function onSearch() {
 // Hàm xóa lọc
 function clearFilter() {
   filter.value = { TenSach: '', TacGia: '', MaNXB: '' };
-  onSearch();
+  currentPage.value = 1;
+  api.get('/api/sach/all').then(res => {
+    books.value = res.data.map(book => ({
+      ...book,
+      DonGia: Number(book.DonGia)
+    }));
+  });
+}
+
+function getImgUrl(img) {
+  if (!img) return defaultImg;
+  if (img.startsWith('http')) return img;
+  return `http://localhost:3000${img}`;
 }
 </script>
 

@@ -34,7 +34,6 @@
               </div>
             </div>
             <ul class="list-unstyled mb-3">
-              <li><i class="bi bi-person me-2"></i><b>Mã độc giả:</b> {{ item.MaDocGia }}</li>
               <li>
                 <i class="bi bi-calendar-check me-2"></i>
                 <b>Ngày mượn: </b>

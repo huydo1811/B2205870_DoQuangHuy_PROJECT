@@ -10,11 +10,14 @@ const nhaxuatbanRoute = require("./app/routes/nhaxuatban.route");
 const sachRoute = require("./app/routes/sach.route");
 const theodoimuonsachRoute = require("./app/routes/theodoimuonsach.route");
 const authRoute = require("./app/routes/auth.route");
+const path = require('path');
 
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use('/uploads', express.static(path.join(__dirname, 'app', 'uploads')));
 
 app.get("/", (req, res) => {
     res.send({ message: "Backend Quản lý thư viện" });

@@ -35,7 +35,7 @@
     <div v-if="message" class="alert" :class="success ? 'alert-success' : 'alert-danger'">{{ message }}</div>
     <div class="table-responsive">
       <table class="table table-bordered align-middle">
-        <thead class="table-light">
+        <thead class="table-primary">
           <tr>
             <th>Mã NV</th>
             <th>Họ tên</th>
