@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post("/", nxbController.create);
 router.get("/", nxbController.findAll);
+router.get("/paged", nxbController.findPaged);
 router.get("/count", nxbController.count); 
 router.get("/:manxb", nxbController.findByMaNXB);
 router.get("/ten/:tennxb", nxbController.findByTenNXB);

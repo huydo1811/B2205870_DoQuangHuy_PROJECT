@@ -4,7 +4,7 @@
       <i class="bi bi-people me-2"></i>Quản lý độc giả
     </h2>
     <div class="row mb-3">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="input-group">
           <input
             v-model="search"
@@ -26,6 +26,12 @@
           </button>
         </div>
       </div>
+      <div class="col-md-2">
+        <span class="badge bg-light text-dark border" style="font-size:1rem;">
+          <i class="bi bi-people-fill me-1 text-primary"></i>
+          {{ totalUsers }} Độc giả
+        </span>
+      </div>
       <div class="col-md-6 text-end">
         <button class="btn btn-success" @click="openAdd">
           <i class="bi bi-plus-circle me-1"></i> Thêm độc giả
@@ -34,7 +40,7 @@
     </div>
     <div v-if="message" class="alert" :class="success ? 'alert-success' : 'alert-danger'">{{ message }}</div>
     <div class="table-responsive">
-      <table class="table table-bordered align-middle">
+      <table class="table table-bordered align-middle table-hover">
         <thead class="table-primary">
           <tr>
             <th>Mã ĐG</th>
@@ -47,7 +53,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="dg in docgias" :key="dg.MaDocGia">
+          <tr v-for="dg in docgias" :key="dg.MaDocGia" class="fadein-row">
             <td>{{ dg.MaDocGia }}</td>
             <td>{{ (dg.Ho || '') + ' ' + (dg.Ten || '') }}</td>
             <td>{{ dg.GioiTinh }}</td>
@@ -202,6 +208,7 @@ const totalPages = computed(() => Math.ceil(total.value / pageSize));
 const modalError = ref('');
 const showDeleteModal = ref(false);
 const dgToDelete = ref(null);
+const totalUsers = ref(0);
 
 async function fetchDocGias() {
   try {
@@ -366,7 +373,20 @@ watch(search, (val, oldVal) => {
   }
 });
 
-onMounted(fetchDocGias);
+async function fetchUserCount() {
+  try {
+    const res = await api.get('/api/docgia/count');
+    totalUsers.value = res.data.count || 0;
+  } catch {
+    totalUsers.value = 0;
+  }
+}
+
+onMounted(() => {
+  fetchDocGias();
+  fetchUserCount();
+});
+
 </script>
 
 <style scoped>
@@ -392,4 +412,13 @@ onMounted(fetchDocGias);
     opacity: 1;
   }
 }
+
+.fadein-row {
+  animation: fadeInRow 0.5s;
+}
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
 </style>

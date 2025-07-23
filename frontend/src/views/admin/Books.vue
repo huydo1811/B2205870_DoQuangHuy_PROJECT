@@ -1,4 +1,3 @@
-<!-- filepath: c:\Tài liệu đại học\CT449\Project\frontend\src\views\admin\Books.vue -->
 <template>
   <main class="container my-4 animate-fadein">
     <h2 class="fw-bold mb-4 text-primary">
@@ -6,7 +5,21 @@
     </h2>
     <div class="row mb-3">
       <div class="col-md-4">
-        <input v-model="search" class="form-control" placeholder="Tìm theo tên sách, tác giả..." @keyup.enter="fetchBooks" />
+        <div class="input-group">
+          <input v-model="search" class="form-control" placeholder="Tìm theo tên sách, tác giả..." @keyup.enter="fetchBooks" />
+          <button class="btn btn-outline-primary" type="button" @click="fetchBooks">
+            <i class="bi bi-search"></i>
+          </button>
+          <button
+            v-if="search"
+            class="btn btn-outline-danger"
+            type="button"
+            @click="clearSearch"
+            title="Xóa lọc"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
       </div>
       <div class="col-md-4">
         <select v-model="selectedNXB" class="form-select" @change="fetchBooks">
@@ -14,7 +27,13 @@
           <option v-for="nxb in nxbs" :key="nxb.MaNXB" :value="nxb.MaNXB">{{ nxb.TenNXB }}</option>
         </select>
       </div>
-      <div class="col-md-4 text-end">
+      <div class="col-md-2">
+        <span class="badge bg-light text-dark border ms-2" style="font-size:1rem;">
+          <i class="bi bi-collection me-1 text-primary"></i>
+          {{ totalBooks }} Loại sách
+        </span>
+      </div>
+      <div class="col-md-2 text-end">
         <button class="btn btn-success" @click="openAdd">
           <i class="bi bi-plus-circle me-1"></i> Thêm sách
         </button>
@@ -37,7 +56,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="book in books" :key="book.MaSach">
+          <tr v-for="book in books" :key="book.MaSach" class="fadein-row">
             <td>
               <img :src="getImgUrl(book.Img)" alt="Ảnh sách" style="width:48px;height:64px;object-fit:cover;border-radius:6px;box-shadow:0 2px 8px #0001;">
             </td>
@@ -185,6 +204,7 @@ const modalError = ref('');
 const showDeleteModal = ref(false);
 const bookToDelete = ref(null);
 const defaultImg = 'https://cdn-icons-png.flaticon.com/512/29/29302.png';
+const totalBooks = ref(0);
 
 async function fetchBooks() {
   try {
@@ -330,6 +350,7 @@ watch(selectedNXB, () => {
 onMounted(() => {
   fetchBooks();
   fetchNXBs();
+  fetchBookCount();
 });
 
 // Xử lý upload ảnh 
@@ -347,8 +368,21 @@ function onFileChange(e) {
 function getImgUrl(img) {
   if (!img) return defaultImg;
   if (img.startsWith('http')) return img;
-  // Nếu là đường dẫn tương đối, thêm host backend
   return `http://localhost:3000${img}`;
+}
+
+function clearSearch() {
+  search.value = '';
+  fetchBooks();
+}
+
+async function fetchBookCount() {
+  try {
+    const res = await api.get('/api/sach/count');
+    totalBooks.value = res.data.count || 0;
+  } catch {
+    totalBooks.value = 0;
+  }
 }
 </script>
 
@@ -365,6 +399,7 @@ function getImgUrl(img) {
 .animate-fadein {
   animation: fadeInUp 0.5s ease;
 }
+
 @keyframes fadeInUp {
   from {
     transform: translateY(30px);
@@ -375,4 +410,12 @@ function getImgUrl(img) {
     opacity: 1;
   }
 }
+.fadein-row {
+  animation: fadeInRow 0.5s;
+}
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
 </style>

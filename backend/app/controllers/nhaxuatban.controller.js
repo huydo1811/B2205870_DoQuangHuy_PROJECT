@@ -78,3 +78,34 @@ exports.count = async (req, res, next) => {
         next(error);
     }
 }
+
+exports.findPaged = async (req, res, next) => {
+    try {
+        const service = new NhaXuatBanService(MongoDB.client);
+        const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
+        const pageSize = parseInt(req.query.pageSize) > 0 ? parseInt(req.query.pageSize) : 10;
+        const search = req.query.search ? req.query.search.trim() : "";
+
+        let filter = {};
+        if (search) {
+            filter.TenNXB = { $regex: search, $options: "i" };
+        }
+
+        const total = await service.collection.countDocuments(filter);
+        const items = await service.collection
+            .find(filter)
+            .sort({ _id: -1 })
+            .skip((page - 1) * pageSize)
+            .limit(pageSize)
+            .toArray();
+
+        res.send({
+            items,
+            total,
+            page,
+            totalPages: Math.ceil(total / pageSize)
+        });
+    } catch (error) {
+        next(error);
+    }
+};

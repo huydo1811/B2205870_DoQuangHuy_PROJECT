@@ -4,7 +4,7 @@
       <i class="bi bi-people me-2"></i>Quản lý nhân viên
     </h2>
     <div class="row mb-3">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <div class="input-group">
           <input
             v-model="search"
@@ -26,6 +26,12 @@
           </button>
         </div>
       </div>
+      <div class="col-md-2">
+          <span class="badge bg-light text-dark border" style="font-size:1rem;">
+            <i class="bi bi-person-badge-fill me-1 text-primary"></i>
+            {{ totalStaff }} Nhân viên
+        </span>
+      </div>
       <div class="col-md-6 text-end">
         <button class="btn btn-success" @click="openAdd">
           <i class="bi bi-plus-circle me-1"></i> Thêm nhân viên
@@ -34,7 +40,7 @@
     </div>
     <div v-if="message" class="alert" :class="success ? 'alert-success' : 'alert-danger'">{{ message }}</div>
     <div class="table-responsive">
-      <table class="table table-bordered align-middle">
+      <table class="table table-bordered align-middle table-hover">
         <thead class="table-primary">
           <tr>
             <th>Mã NV</th>
@@ -48,7 +54,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="nv in nhanviens" :key="nv.MaNhanVien">
+          <tr v-for="nv in nhanviens" :key="nv.MaNhanVien" class="fadein-row">
             <td>{{ nv.MaNhanVien }}</td>
             <td>
               <span v-if="nv.MaNhanVien === maNhanVienDangNhap" class="text-primary fw-bold">
@@ -188,6 +194,7 @@ import { ref, reactive, onMounted, computed, watch } from 'vue';
 import api from '../../services/api.service';
 
 const nhanviens = ref([]);
+const totalStaff = ref(0);
 const showModal = ref(false);
 const isEdit = ref(false);
 const form = reactive({
@@ -351,7 +358,20 @@ watch(search, (val, oldVal) => {
   }
 });
 
-onMounted(fetchNhanViens);
+async function fetchStaffCount() {
+  try {
+    const res = await api.get('/api/nhanvien/count');
+    totalStaff.value = res.data.count || 0;
+  } catch (err) {
+    console.error('Lỗi lấy số lượng nhân viên:', err);
+    totalStaff.value = 0;
+  }
+}
+
+onMounted (() => {
+  fetchNhanViens();
+  fetchStaffCount();
+});
 
 async function resetPassword() {
   if (!form.MaNhanVien) return;
@@ -400,5 +420,12 @@ async function resetPassword() {
   }
 }
 
+.fadein-row {
+  animation: fadeInRow 0.5s;
+}
+@keyframes fadeInRow {
+  from { opacity: 0; transform: translateY(10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
 
 </style>
