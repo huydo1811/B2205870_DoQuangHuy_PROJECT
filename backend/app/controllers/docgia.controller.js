@@ -95,7 +95,8 @@ exports.findAll = async (req, res, next) => {
                     },
                     { Ho: { $regex: search, $options: 'i' } },
                     { Ten: { $regex: search, $options: 'i' } },
-                    { DienThoai: { $regex: search, $options: 'i' } }
+                    { DienThoai: { $regex: search, $options: 'i' } },
+                    { MaDocGia: { $regex: search, $options: 'i' } },
                 ]
             };
         }

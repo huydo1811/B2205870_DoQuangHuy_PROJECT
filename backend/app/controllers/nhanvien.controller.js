@@ -49,7 +49,8 @@ exports.findAll = async (req, res, next) => {
             ? {
                 $or: [
                     { HoTen: { $regex: search, $options: 'i' } },
-                    { DienThoai: { $regex: search, $options: 'i' } }
+                    { DienThoai: { $regex: search, $options: 'i' } },
+                    { MaNhanVien: { $regex: search, $options: 'i' } }
                 ]
             }
             : {};

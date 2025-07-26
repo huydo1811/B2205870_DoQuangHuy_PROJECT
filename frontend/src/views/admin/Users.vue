@@ -10,7 +10,7 @@
             v-model="search"
             @keyup.enter="onSearch"
             class="form-control"
-            placeholder="Tìm theo tên hoặc SĐT..."
+            placeholder="Tìm theo mã độc giả, tên hoặc SĐT..."
           />
           <button class="btn btn-outline-primary" type="button" @click="onSearch">
             <i class="bi bi-search"></i>

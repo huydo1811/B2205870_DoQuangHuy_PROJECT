@@ -186,3 +186,48 @@ exports.count = async (req, res, next) => {
         next(error);
     }
 };
+
+const fs = require("fs");
+
+exports.updateWithImage = async (req, res, next) => {
+    try {
+        const sachService = new SachService(MongoDB.client);
+        const maSach = req.params.masach;
+        const current = await sachService.findByMaSach(maSach);
+
+        // Nếu có ảnh mới và sách đã có ảnh cũ thì xóa ảnh cũ
+        if (req.file && current && current.Img) {
+            const oldPath = path.join(__dirname, "..", "uploads", "books", path.basename(current.Img));
+            if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        }
+
+        // Lưu ảnh mới
+        const updateData = req.body;
+        if (req.file) {
+            updateData.Img = "/uploads/books/" + req.file.filename;
+        }
+        await sachService.update(maSach, updateData);
+        res.send({ message: "Cập nhật sách thành công!" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.delete = async (req, res, next) => {
+    try {
+        const sachService = new SachService(MongoDB.client);
+        const maSach = req.params.masach;
+        const current = await sachService.findByMaSach(maSach);
+
+        // Xóa file ảnh nếu có
+        if (current && current.Img) {
+            const imgPath = path.join(__dirname, "..", "uploads", "books", path.basename(current.Img));
+            if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+        }
+
+        await sachService.delete(maSach);
+        res.send({ message: "Xóa sách thành công!" });
+    } catch (error) {
+        next(error);
+    }
+};
