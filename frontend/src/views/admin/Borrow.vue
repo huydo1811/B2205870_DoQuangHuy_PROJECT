@@ -40,6 +40,10 @@
         </span>
       </div>
     </div>
+    <button class="btn btn-warning btn-sm mb-2"
+        @click="cancelExpiredApprovals">
+        Hủy các phiếu 'Đã duyệt' quá hạn 3 ngày
+    </button>
     <div v-if="message" class="alert" :class="success ? 'alert-success' : 'alert-danger'">{{ message }}</div>
     <div class="table-responsive">
       <table class="table table-bordered table-hover align-middle">
@@ -48,10 +52,11 @@
             <th style="min-width:110px;">Mã mượn</th>
             <th style="min-width:140px;">Độc giả</th>
             <th style="min-width:140px;">Tên sách</th>
-            <th style="min-width:120px;">Ngày mượn</th>
+            <th style="min-width:100px;">Ngày mượn</th>
             <th style="min-width:120px;">Ngày trả</th>
             <th style="min-width:110px;">Trạng thái</th>
-            <th class="text-center" style="width:160px;">Thao tác</th>
+            <th style="min-width:100px;">Tiền phạt</th>
+            <th class="text-center" style="width:120px;">Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -66,6 +71,12 @@
             </td>
             <td>
               <span :class="statusClass(item.TrangThai)">{{ item.TrangThai }}</span>
+            </td>
+            <td>
+              <span v-if="item.TienPhat && item.TienPhat > 0" class="text-danger fw-bold">
+                {{ item.TienPhat.toLocaleString('vi-VN') }} đ
+              </span>
+              <span v-else>-</span>
             </td>
             <td class="text-center">
               <button
@@ -83,10 +94,17 @@
                 class="btn btn-sm btn-success me-1"
                 @click="updateStatus(item, 'Đã trả')"
               >Xác nhận trả</button>
+              <button
+                v-if="item.TrangThai === 'Đã trả'"
+                class="btn btn-sm btn-danger"
+                @click="deleteBorrow(item)"
+              >
+                Xóa
+              </button>
             </td>
           </tr>
           <tr v-if="pagedBorrows.length === 0">
-            <td colspan="7" class="text-center text-muted py-4">Không có phiếu mượn nào.</td>
+            <td colspan="8" class="text-center text-muted py-4">Không có phiếu mượn nào.</td>
           </tr>
         </tbody>
       </table>
@@ -245,6 +263,53 @@ async function fetchBorrowStats() {
       'Đang mượn': 0,
       'Đã trả': 0
     };
+  }
+}
+
+async function deleteBorrow(item) {
+  const result = await Swal.fire({
+    title: 'Xác nhận xóa',
+    text: `Bạn có chắc muốn xóa phiếu mượn ${item.MaMuonSach}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Xóa',
+    cancelButtonText: 'Hủy'
+  });
+  if (!result.isConfirmed) return;
+  try {
+    await api.delete(`/api/theodoimuonsach/${item.MaMuonSach}`);
+    message.value = 'Đã xóa phiếu mượn';
+    success.value = true;
+    await fetchBorrows();
+    setTimeout(() => message.value = '', 2500);
+  } catch (err) {
+    message.value = err.response?.data?.message || 'Lỗi xóa phiếu mượn!';
+    success.value = false;
+    setTimeout(() => message.value = '', 2500);
+  }
+}
+
+async function cancelExpiredApprovals() {
+  const result = await Swal.fire({
+    title: 'Xác nhận',
+    text: 'Bạn có chắc muốn hủy các phiếu duyệt quá hạn 3 ngày?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Đồng ý',
+    cancelButtonText: 'Hủy'
+  });
+  if (!result.isConfirmed) return;
+  try {
+    const res = await api.post('/api/theodoimuonsach/cancel-expired-approvals');
+    message.value = res.data.message + ` (${res.data.modified} phiếu)`;
+    success.value = true;
+    await fetchBorrows();
+    await fetchBorrowStats();
+    setTimeout(() => message.value = '', 2500);
+  } catch (err) {
+    message.value = err.response?.data?.message || 'Lỗi!';
+    success.value = false;
+    setTimeout(() => message.value = '', 2500);
   }
 }
 

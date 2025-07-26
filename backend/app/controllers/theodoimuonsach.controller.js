@@ -166,6 +166,14 @@ exports.update = async (req, res, next) => {
         } else if (trangThaiMoi === "Đã trả") {
             req.body.NgayMuon = current.NgayMuon || new Date();
             req.body.NgayTra = new Date();
+            const ngayMuon = new Date(req.body.NgayMuon);
+            const ngayTra = new Date(req.body.NgayTra);
+            const soNgay = Math.ceil((ngayTra - ngayMuon) / (1000 * 60 * 60 * 24));
+            const quaHan = soNgay - 14;
+            req.body.TienPhat = quaHan > 0 ? quaHan * 5000 : 0; // 2000đ/ngày
+        }
+        if (trangThaiMoi === "Đã duyệt" && current.TrangThai !== "Đã duyệt") {
+            req.body.NgayDuyet = new Date();
         }
 
         req.body.TrangThai = trangThaiMoi;
@@ -232,6 +240,24 @@ exports.borrowStatusStats = async (req, res, next) => {
             if (stats[item.TrangThai] !== undefined) stats[item.TrangThai]++;
         });
         res.json(stats);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.cancelExpiredApprovals = async (req, res, next) => {
+    try {
+        const service = new TheoDoiMuonSachService(MongoDB.client);
+        const now = new Date();
+        const expiredDate = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+        const expired = await service.collection.updateMany(
+            {
+                TrangThai: "Đã duyệt",
+                NgayDuyet: { $lte: expiredDate }
+            },
+            { $set: { TrangThai: "Chờ duyệt", NgayDuyet: null } }
+        );
+        res.send({ message: "Đã hủy các phiếu duyệt quá hạn", modified: expired.modifiedCount });
     } catch (error) {
         next(error);
     }

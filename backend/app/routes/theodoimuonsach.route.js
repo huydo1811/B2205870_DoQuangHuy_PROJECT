@@ -3,6 +3,7 @@ const controller = require("../controllers/theodoimuonsach.controller");
 const router = express.Router();
 
 router.post("/", controller.create);
+router.post('/cancel-expired-approvals', controller.cancelExpiredApprovals);
 router.get("/", controller.findAll);
 router.get("/count-borrow-today", controller.countBorrowToday);
 router.get('/borrow-stats', controller.borrowStats);
