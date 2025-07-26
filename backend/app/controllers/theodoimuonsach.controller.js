@@ -168,9 +168,10 @@ exports.update = async (req, res, next) => {
             req.body.NgayTra = new Date();
             const ngayMuon = new Date(req.body.NgayMuon);
             const ngayTra = new Date(req.body.NgayTra);
-            const soNgay = Math.ceil((ngayTra - ngayMuon) / (1000 * 60 * 60 * 24));
+            const msPerDay = 1000 * 60 * 60 * 24;
+            const soNgay = Math.floor((ngayTra - ngayMuon) / msPerDay);
             const quaHan = soNgay - 14;
-            req.body.TienPhat = quaHan > 0 ? quaHan * 5000 : 0; // 2000đ/ngày
+            req.body.TienPhat = quaHan > 0 ? quaHan * 5000 : 0; 
         }
         if (trangThaiMoi === "Đã duyệt" && current.TrangThai !== "Đã duyệt") {
             req.body.NgayDuyet = new Date();
@@ -179,7 +180,8 @@ exports.update = async (req, res, next) => {
         req.body.TrangThai = trangThaiMoi;
 
         const result = await service.update(req.params.mamuonsach, req.body);
-        res.send({ message: "Cập nhật phiếu mượn thành công!", data: result });
+        const updated = await service.findByMaMuonSach(req.params.mamuonsach);
+        res.send({ message: "Cập nhật phiếu mượn thành công!", data: updated });
     } catch (error) {
         next(error);
     }

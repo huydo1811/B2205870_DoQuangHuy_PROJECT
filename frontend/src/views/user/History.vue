@@ -165,11 +165,17 @@ onMounted(async () => {
   to { opacity: 1; transform: none;}
 }
 .fade-list-enter-active, .fade-list-leave-active {
-  transition: all 0.4s cubic-bezier(.4,2,.6,1);
+  transition: opacity 0.4s cubic-bezier(.4,2,.6,1), transform 0.4s cubic-bezier(.4,2,.6,1);
 }
 .fade-list-enter-from, .fade-list-leave-to {
   opacity: 0;
-  transform: translateY(30px) scale(0.98);
+  transform: scale(0.98);
+  position: absolute;
+  width: 100%;
+}
+.fade-list-leave-active {
+  position: absolute;
+  width: 100%;
 }
 .borrow-card {
   border-radius: 18px;

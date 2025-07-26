@@ -224,13 +224,23 @@ async function updateStatus(item, newStatus) {
   });
   if (!result.isConfirmed) return;
   try {
-    await api.put(`/api/theodoimuonsach/${item.MaMuonSach}`, {
+    const res = await api.put(`/api/theodoimuonsach/${item.MaMuonSach}`, {
       TrangThai: newStatus,
       NgayTra: newStatus === 'Đã trả' ? new Date() : item.NgayTra
     });
     message.value = `Đã cập nhật trạng thái: ${newStatus}`;
     success.value = true;
     await fetchBorrows();
+
+    if (newStatus === 'Đã trả' && res.data?.data?.TienPhat && res.data.data.TienPhat > 0) {
+      const quaHan = Math.floor((new Date(res.data.data.NgayTra) - new Date(res.data.data.NgayMuon)) / (1000 * 60 * 60 * 24)) - 14;
+      Swal.fire(
+        'Trả sách thành công!',
+        `Độc giả bị phạt: <b class="text-danger">${res.data.data.TienPhat.toLocaleString('vi-VN')} đ</b> do trả trễ <b>${quaHan}</b> ngày.`,
+        'warning'
+      );
+    }
+
     setTimeout(() => {
       message.value = '';
     }, 2500);

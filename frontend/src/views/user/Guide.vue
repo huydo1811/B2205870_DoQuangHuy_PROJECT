@@ -28,12 +28,12 @@ const steps = [
   {
     icon: "📝",
     title: "Đăng ký mượn",
-    desc: "Nhấn nút 'Mượn' và xác nhận thông tin. Sách sẽ được giữ cho bạn tại thư viện."
+    desc: "Nhấn nút 'Mượn' và xác nhận thông tin. Sách sẽ được giữ cho bạn tại thư viện trong vòng 3 ngày. Nếu sau 3 ngày bạn không đến lấy sách thì sẽ bị đặt lại trạng thái 'Chờ duyệt'."
   },
   {
     icon: "📦",
     title: "Nhận & trả sách",
-    desc: "Đến thư viện nhận sách. Khi trả, hãy đến thư viện trả và trạng thái 'Đã trả' sẽ được cập nhật trong 'Lịch sử mượn'."
+    desc: "Đến thư viện nhận sách. Khi trả, hãy đến thư viện trả và trạng thái 'Đã trả' sẽ được cập nhật trong 'Lịch sử mượn'. Thời hạn mượn sách là 14 ngày, nếu sau 14 ngày sẽ bị tính phí trễ 5000đ/ngày."
   }
 ];
 </script>
