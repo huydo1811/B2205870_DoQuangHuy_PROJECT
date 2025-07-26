@@ -16,6 +16,7 @@ import AdminProfile from '../views/admin/Profile.vue';
 import Users from '../views/admin/Users.vue';
 import BooksManager from '../views/admin/Books.vue';
 import Publishers from '../views/admin/Publishers.vue'; 
+import Borrow from '../views/admin/Borrow.vue';
 
 const routes = [
   { path: '/', redirect: '/login' },
@@ -45,7 +46,8 @@ const routes = [
       { path: 'staff', component: () => import('../views/admin/Staff.vue'), meta: { title: 'Quản lý nhân viên' } },
       { path: 'users', component: Users, meta: { title: 'Quản lý người dùng' } },
       { path: 'books', component: BooksManager, meta: { title: 'Quản lý sách' } },
-      { path: 'publishers', component: Publishers, meta: { title: 'Quản lý nhà xuất bản' } }
+      { path: 'publishers', component: Publishers, meta: { title: 'Quản lý nhà xuất bản' } },
+      { path: 'borrow', component: Borrow, meta: { title: 'Mượn sách' } }
     ]
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, meta: { title: 'Không tìm thấy' } }

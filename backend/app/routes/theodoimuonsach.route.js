@@ -7,6 +7,7 @@ router.get("/", controller.findAll);
 router.get("/count-borrow-today", controller.countBorrowToday);
 router.get('/borrow-stats', controller.borrowStats);
 router.get('/top-books', controller.topBooks);
+router.get('/status-stats', controller.borrowStatusStats);
 router.get("/:mamuonsach", controller.findByMaMuonSach);
 router.get("/docgia/:madocgia", controller.findByMaDocGia);
 router.get("/sach/:masach", controller.findByMaSach);

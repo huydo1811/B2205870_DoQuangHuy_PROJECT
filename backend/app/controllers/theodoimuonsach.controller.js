@@ -54,11 +54,25 @@ exports.create = async (req, res, next) => {
 exports.findAll = async (req, res, next) => {
     try {
         const service = new TheoDoiMuonSachService(MongoDB.client);
+        const sachService = new SachService(MongoDB.client);
+
         const result = await service.findAll();
         if (!result || result.length === 0) {
             return res.status(404).send({ message: "Chưa có phiếu mượn nào trong hệ thống." });
         }
-        res.send(result);
+        const maSachArr = [...new Set(result.map(item => item.MaSach))];
+        // Truy vấn bảng sách lấy tên sách
+        const sachArr = await sachService.collection.find({ MaSach: { $in: maSachArr } }).toArray();
+
+        const sachMap = {};
+        sachArr.forEach(s => {
+            sachMap[s.MaSach] = s.TenSach;
+        });
+        result.forEach(item => {
+            item.TenSach = sachMap[item.MaSach] || '';
+        });
+
+        res.send(result); 
     } catch (error) {
         next(error);
     }
@@ -115,22 +129,20 @@ exports.update = async (req, res, next) => {
     try {
         const service = new TheoDoiMuonSachService(MongoDB.client);
         const sachService = new SachService(MongoDB.client);
-
-        // Lấy phiếu mượn hiện tại
         const current = await service.findByMaMuonSach(req.params.mamuonsach);
         if (!current) return res.status(404).send({ message: "Không tìm thấy phiếu mượn" });
 
         const trangThaiMoi = req.body.TrangThai || current.TrangThai;
-
-        // Nếu chuyển từ "Đang mượn" sang "Đã trả" thì cộng lại số quyển
-        if (current.TrangThai === "Đang mượn" && trangThaiMoi === "Đã trả") {
+        if (trangThaiMoi === "Đã duyệt") {
+            const allBorrows = await service.findByMaSach(current.MaSach);
             const sach = await sachService.findByMaSach(current.MaSach);
-            if (sach) {
-                await sachService.update(current.MaSach, { SoQuyen: sach.SoQuyen + 1 });
+            const count = allBorrows.filter(
+                b => ["Đã duyệt", "Đang mượn"].includes(b.TrangThai)
+            ).length;
+            if (count >= sach.SoQuyen) {
+                return res.status(400).send({ message: "Sách đã hết, không thể duyệt thêm phiếu mượn!" });
             }
         }
-
-        // Nếu chuyển từ trạng thái khác sang "Đang mượn" thì trừ số quyển
         if (current.TrangThai !== "Đang mượn" && trangThaiMoi === "Đang mượn") {
             const sach = await sachService.findByMaSach(current.MaSach);
             if (sach && sach.SoQuyen > 0) {
@@ -139,8 +151,12 @@ exports.update = async (req, res, next) => {
                 return res.status(400).send({ message: "Sách đã được mượn hết!" });
             }
         }
-
-        // Xử lý ngày mượn/ngày trả như cũ
+        if (current.TrangThai === "Đang mượn" && trangThaiMoi === "Đã trả") {
+            const sach = await sachService.findByMaSach(current.MaSach);
+            if (sach) {
+                await sachService.update(current.MaSach, { SoQuyen: sach.SoQuyen + 1 });
+            }
+        }
         if (trangThaiMoi === "Chờ duyệt" || trangThaiMoi === "Đã duyệt") {
             req.body.NgayMuon = null;
             req.body.NgayTra = null;
@@ -160,7 +176,6 @@ exports.update = async (req, res, next) => {
         next(error);
     }
 };
-
 exports.delete = async (req, res, next) => {
     try {
         const service = new TheoDoiMuonSachService(MongoDB.client);
@@ -203,3 +218,21 @@ exports.topBooks = async (req, res, next) => {
   }
 };
 
+exports.borrowStatusStats = async (req, res, next) => {
+    try {
+        const service = new TheoDoiMuonSachService(MongoDB.client);
+        const all = await service.findAll();
+        const stats = {
+            'Chờ duyệt': 0,
+            'Đã duyệt': 0,
+            'Đang mượn': 0,
+            'Đã trả': 0
+        };
+        all.forEach(item => {
+            if (stats[item.TrangThai] !== undefined) stats[item.TrangThai]++;
+        });
+        res.json(stats);
+    } catch (error) {
+        next(error);
+    }
+};

@@ -46,7 +46,7 @@
           <tr>
             <th>Ảnh</th>
             <th>Mã sách</th>
-            <th>Tên sách</th>
+            <th style="min-width: 160px;">Tên sách</th>
             <th>Tác giả</th>
             <th>NXB</th>
             <th>Năm XB</th>
@@ -61,7 +61,7 @@
               <img :src="getImgUrl(book.Img)" alt="Ảnh sách" style="width:48px;height:64px;object-fit:cover;border-radius:6px;box-shadow:0 2px 8px #0001;">
             </td>
             <td>{{ book.MaSach }}</td>
-            <td>{{ book.TenSach }}</td>
+            <td style="min-width: 160px; white-space: normal;">{{ book.TenSach }}</td>
             <td>{{ book.TacGia }}</td>
             <td>{{ getTenNXB(book.MaNXB) }}</td>
             <td>{{ book.NamXuatBan }}</td>

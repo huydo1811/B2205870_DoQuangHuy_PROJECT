@@ -44,7 +44,7 @@
         <thead class="table-primary">
           <tr>
             <th>Mã ĐG</th>
-            <th>Họ tên</th>
+            <th style="min-width: 140px;">Họ tên</th>
             <th>Giới tính</th>
             <th>Điện thoại</th>
             <th>Địa chỉ</th>
@@ -55,7 +55,7 @@
         <tbody>
           <tr v-for="dg in docgias" :key="dg.MaDocGia" class="fadein-row">
             <td>{{ dg.MaDocGia }}</td>
-            <td>{{ (dg.Ho || '') + ' ' + (dg.Ten || '') }}</td>
+            <td style="min-width: 140px; white-space: normal;">{{ (dg.Ho || '') + ' ' + (dg.Ten || '') }}</td>
             <td>{{ dg.GioiTinh }}</td>
             <td>{{ dg.DienThoai }}</td>
             <td>{{ dg.DiaChi }}</td>

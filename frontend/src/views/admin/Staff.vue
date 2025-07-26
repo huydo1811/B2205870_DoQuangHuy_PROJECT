@@ -44,7 +44,7 @@
         <thead class="table-primary">
           <tr>
             <th>Mã NV</th>
-            <th>Họ tên</th>
+            <th style="min-width: 140px;">Họ tên</th>
             <th>Giới tính</th>
             <th>Điện thoại</th>
             <th>Địa chỉ</th>
@@ -56,7 +56,7 @@
         <tbody>
           <tr v-for="nv in nhanviens" :key="nv.MaNhanVien" class="fadein-row">
             <td>{{ nv.MaNhanVien }}</td>
-            <td>
+            <td style="min-width: 140px; white-space: normal;">
               <span v-if="nv.MaNhanVien === maNhanVienDangNhap" class="text-primary fw-bold">
                 <i class="bi bi-person-circle me-1"></i>{{ nv.HoTen }} <span class="badge bg-info text-dark ms-1">Bạn</span>
               </span>
