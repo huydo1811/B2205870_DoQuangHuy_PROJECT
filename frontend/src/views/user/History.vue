@@ -50,6 +50,11 @@
                 <b>Trạng thái: </b>
                 <span :class="statusClass(item.TrangThai)">{{ item.TrangThai }}</span>
               </li>
+              <li v-if="item.TrangThai === 'Đã trả' && item.TienPhat && item.TienPhat > 0">
+                <i class="bi bi-cash-coin me-2"></i>
+                <b>Tiền phạt: </b>
+                <span class="text-danger fw-bold">{{ item.TienPhat.toLocaleString('vi-VN') }} đ</span>
+              </li>
             </ul>
           </div>
         </div>
