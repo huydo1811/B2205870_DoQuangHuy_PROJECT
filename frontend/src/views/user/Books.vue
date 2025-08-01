@@ -73,29 +73,35 @@
     <!-- Modal chi tiết sách -->
     <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content p-4">
-          <div class="modal-header">
-            <h5 class="modal-title" id="bookModalLabel">{{ selectedBook?.TenSach }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
-          </div>
-          <div class="modal-body row">
-            <div class="col-md-5 text-center mb-3">
-              <img :src="getImgUrl(selectedBook?.Img)" alt="Ảnh sách" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+        <div class="modal-content book-modal-content p-0 overflow-hidden">
+          <div class="row g-0">
+            <div class="col-md-5 d-flex align-items-center justify-content-center bg-gradient-book p-4">
+              <img :src="getImgUrl(selectedBook?.Img)" alt="Ảnh sách" class="img-fluid rounded-4 shadow-lg book-modal-img" />
             </div>
-            <div class="col-md-7">
-              <p><strong>Tác giả:</strong> {{ selectedBook?.TacGia }}</p>
-              <p><strong>Năm xuất bản:</strong> {{ selectedBook?.NamXuatBan }}</p>
-              <p><strong>Số quyển còn:</strong> {{ selectedBook?.SoQuyen }}</p>
-              <p><strong>Giá:</strong> {{ selectedBook?.DonGia?.toLocaleString() }}đ</p>
-              <p><strong>Mã sách:</strong> {{ selectedBook?.MaSach }}</p>
-              <p><strong>Tên nhà xuất bản:</strong> {{ getTenNXB(selectedBook?.MaNXB) }}</p>
+            <div class="col-md-7 p-4">
+              <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-book-half fs-2 text-primary me-2"></i>
+                <h4 class="modal-title fw-bold mb-0" id="bookModalLabel">{{ selectedBook?.TenSach }}</h4>
+              </div>
+              <div class="mb-2">
+                <span class="badge bg-info text-dark me-2 mb-1"><i class="bi bi-person"></i> {{ selectedBook?.TacGia }}</span>
+                <span class="badge bg-secondary me-2 mb-1"><i class="bi bi-calendar"></i> {{ selectedBook?.NamXuatBan }}</span>
+                <span class="badge bg-success mb-1"><i class="bi bi-collection"></i> Số quyển: {{ selectedBook?.SoQuyen }}</span>
+              </div>
+              <ul class="list-unstyled mb-3">
+                <li class="mb-1"><i class="bi bi-cash-coin me-2 text-warning"></i> <b>Giá:</b> <span class="text-danger fw-bold">{{ selectedBook?.DonGia?.toLocaleString() }} đ</span></li>
+                <li class="mb-1"><i class="bi bi-upc-scan me-2"></i> <b>Mã sách:</b> {{ selectedBook?.MaSach }}</li>
+                <li class="mb-1"><i class="bi bi-building me-2"></i> <b>Nhà xuất bản:</b> {{ getTenNXB(selectedBook?.MaNXB) }}</li>
+              </ul>
+              <div class="d-flex justify-content-between align-items-center mt-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                  <i class="bi bi-x-lg"></i> Đóng
+                </button>
+                <button class="btn btn-gradient px-4 py-2 fs-6" @click="handleBorrow">
+                  <i class="bi bi-bookmark-plus-fill me-1"></i> Mượn sách
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button class="btn btn-success" @click="handleBorrow">
-              <i class="bi bi-bookmark-plus-fill me-1"></i> Mượn sách
-            </button>
           </div>
         </div>
       </div>
@@ -158,7 +164,7 @@ async function handleBorrow() {
     const modal = window.bootstrap?.Modal.getOrCreateInstance(document.getElementById('bookModal'));
     modal && modal.hide();
   } catch (err) {
-    Swal.fire('Lỗi', err?.response?.data?.message || 'Mượn sách thất bại!', 'error');
+    Swal.fire('Thông báo', err?.response?.data?.message || 'Mượn sách thất bại!', 'error');
   }
 }
 
@@ -306,14 +312,35 @@ function getImgUrl(img) {
   border-top-right-radius: 18px;
   display: block;
 }
+.book-modal-content {
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 #339af055;
+  border: none;
+  background: #fff;
+}
+.bg-gradient-book {
+  background: linear-gradient(135deg, #e3f2fd 0%, #b6e0fe 100%);
+  min-height: 340px;
+}
+.book-modal-img {
+  max-height: 300px;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 #339af055;
+  background: #fff;
+  padding: 8px;
+}
+.badge {
+  font-size: 1rem;
+  padding: 0.5em 0.9em;
+  border-radius: 12px;
+}
 .btn-gradient {
   background: linear-gradient(90deg, #339af0 0%, #74c0fc 100%);
   color: white;
   border: none;
   border-radius: 10px;
   font-weight: 600;
-  padding: 8px 16px;
-  transition: 0.3s ease;
+  transition: 0.3s;
 }
 .btn-gradient:hover {
   background: linear-gradient(90deg, #74c0fc 0%, #339af0 100%);

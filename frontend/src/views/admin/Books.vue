@@ -48,8 +48,8 @@
             <th>Mã sách</th>
             <th style="min-width: 160px;">Tên sách</th>
             <th>Tác giả</th>
-            <th>NXB</th>
-            <th>Năm XB</th>
+            <th>Nhà xuất bản</th>
+            <th>Năm xuất bản</th>
             <th>Số quyển</th>
             <th>Giá</th>
             <th>Thao tác</th>
@@ -63,11 +63,11 @@
             <td>{{ book.MaSach }}</td>
             <td style="min-width: 160px; white-space: normal;">{{ book.TenSach }}</td>
             <td>{{ book.TacGia }}</td>
-            <td>{{ getTenNXB(book.MaNXB) }}</td>
-            <td>{{ book.NamXuatBan }}</td>
-            <td>{{ book.SoQuyen }}</td>
+            <td >{{ getTenNXB(book.MaNXB) }}</td>
+            <td style="min-width:140px; white-space: normal;">{{ book.NamXuatBan }}</td>
+            <td style="min-width: 100px; white-space: normal;">{{ book.SoQuyen }}</td>
             <td>{{ book.DonGia?.toLocaleString() }}đ</td>
-            <td>
+            <td style="min-width: 90px; white-space: normal;">
               <button class="btn btn-sm btn-primary me-2" @click="openEdit(book)">
                 <i class="bi bi-pencil"></i>
               </button>
